@@ -73,6 +73,19 @@ aside h3{
     border-radius: .5rem;
     background-color: #9faec1;
 }
+/* button in asideBTN */
+#testfa{
+    background-color:yellow;
+}
+
+#teststr{
+   background-color: yellow; 
+   
+}
+
+#minimize{
+    background-color: rgb(237, 110, 5);
+}
 
 /* Right side content */
 .Rholder{
