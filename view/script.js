@@ -1,5 +1,5 @@
 var canvas = document.querySelector("canvas");
 
-canvas.style.width = "auto";
-canvas.style.height = "40rem";
+canvas.style.width = "83vw";
+canvas.style.height = "33rem";
 console.log(canvas);
