@@ -7,13 +7,18 @@ const TypeFA = Object.freeze({
 class FA {
     alphabet = [];
     states = [];
-    startState;
     finalStates = [];
     type;
+    output;
+    
 
     createState() {
         let s = new State();
         this.states.push(s);
+    }
+
+    makeFinalState(state) {
+        this.finalStates.push(state)
     }
 
     determineType() {
@@ -23,18 +28,19 @@ class FA {
 
             console.log("state: " + i + " transition length:" + currentTransitionLength)
 
-            // if the number of transitions and the number of alphabets are not the same  
-            // then it is an NFA 
             if(!(currentTransitionLength === this.alphabet.length)) {
+                // if the number of transitions and the number of alphabets are not the same  
+                // then it is an NFA 
                 this.type = TypeFA.NFA
                 return;
             }
+
         }
 
         for(let i = 0; i < this.states.length; i++) {
             // loops through each state
 
-            for (const [input, possibleStates] of Object.entries(this.states[i].allTransitions)) {
+            for(const [input, possibleStates] of Object.entries(this.states[i].allTransitions)) {
                 // get all possible transition states of each input in the current state
 
                 console.log(`input: ${input}, Possible states: ${possibleStates.length}`);
@@ -82,13 +88,43 @@ class FA {
         }
     }
 
-    transition(state, input) {
+    checkStr(str) {
+        if(this.type === undefined) { this.determineType(); };
+
+        if(this.type == TypeFA.DFA) { this.checkStrDFA(str); };
+    } 
+
+    checkStrDFA(str) {
+
+        if(this.finalStates.length == 0) { 
+            this.output = "Rejected: Empty Final State";
+            console.log(str + ": " + this.output)
+            return;
+        }
+
+        let currentState = this.states[0];
+        for(let i = 0; i < str.length; i++) {
+            let nextState = currentState.transitionFrom(str.charAt(i))[0];
+            currentState = nextState;
+        }
+
+        this.currentState = currentState;
+
+        if(this.finalStates.includes(currentState)) {
+            console.log("FUCK YEAH");
+            this.output = "Accepted"
+
+        } else {
+            console.log("FUCK NO");
+            this.output = "Rejected";
+        }
 
     } 
  
 }
 
 class State {
+
     allTransitions = {}; // all transitions of a state
 
     createTransition(str, nextState) {
@@ -106,7 +142,7 @@ class State {
     }
 
     transitionFrom(str) {
-        return this.allTransitions[str];
+        return this.allTransitions[str];    // Returns an Array of States
     }
 
 }
@@ -141,35 +177,28 @@ class State {
 // f2.getType();
 
 
-let f3 = new FA();
+// let f3 = new FA();
 
-f3.alphabet = ["0", "1"];
-f3.createState();
-f3.createState();
-f3.createState();
+// f3.alphabet = ["0", "1"];
+// f3.createState();
+// f3.createState();
+// f3.createState();
 
-f3.states[0].createTransition("0", f3.states[1]);
-f3.states[0].createTransition("1", f3.states[0]);
-
-f3.states[1].createTransition("0", f3.states[1]);
-f3.states[1].createTransition("1", f3.states[2]);
-
-f3.states[2].createTransition("0", f3.states[2]);
-f3.states[2].createTransition("1", f3.states[2]);
-
-console.log(f3.states[2])
-
-// f3.states[2].createTransition("1", f3.states[2]);
-// f3.states[2].createTransition("0", f3.states[2]);
-
+// f3.states[0].createTransition("0", f3.states[1]);
+// f3.states[0].createTransition("1", f3.states[0]);
 // f3.states[0].createTransition("", f3.states[2]);
 
-// console.log("F3 transitions: " + f3.states[0].allTransitions[""][0])
+// f3.states[1].createTransition("0", f3.states[1]);
+// f3.states[1].createTransition("1", f3.states[2]);
 
-
+// f3.states[2].createTransition("0", f3.states[2]);
+// f3.states[2].createTransition("1", f3.states[2]);
 
 // console.log("f3 type: " );
 // f3.getType();
+
+
+
 
 let f4 = new FA();
 f4.alphabet = ["a", "b"];
@@ -181,13 +210,20 @@ f4.states[0].createTransition("a",f4.states[1]);
 f4.states[0].createTransition("b",f4.states[2]);
 f4.states[1].createTransition("a",f4.states[2]);
 f4.states[1].createTransition("b",f4.states[1]);
+
 f4.states[2].createTransition("a",f4.states[0]);
 f4.states[2].createTransition("b",f4.states[1]);
+
+f4.makeFinalState(f4.states[2]);
 
 console.log("f4 type: ");
 f4.getType();
 
-console.log(f3.states[0].transitionFrom("0")[0].transitionFrom("0")[0])
+
+f4.checkStr("aa");  // FUCK YEAH
+f4.checkStr("aaa"); // FUCK NO
+f4.checkStr("aaaaa"); // FUCK NO
+
 
 
 
