@@ -87,7 +87,10 @@ class State {
         // initialize an array to store possible transitions
         if(!this.allTransitions[str]) { this.allTransitions[str] = [] }
 
-        // append a next state to input 
+        // do nothing if the same transition using the str already exists
+        if(this.allTransitions[str].includes(nextState)) { return; }
+
+        // add a next state to the possible transitions of the current input 
         this.allTransitions[str].push(nextState);
 
         console.log("transition created")
@@ -96,33 +99,33 @@ class State {
 }
 
 // test
-// let f1 = new FA();
-// console.log(TypeFA.DFA);
+let f1 = new FA();
+console.log(TypeFA.DFA);
 
-// f1.alphabet = ["a", "b", "c"];
-// f1.createState();
-// f1.createState();
+f1.alphabet = ["a", "b", "c"];
+f1.createState();
+f1.createState();
 
-// f1.states[0].createTransition("a", f1.states[1]);
-// f1.states[0].createTransition("b", f1.states[1]);
-// f1.states[1].createTransition("a", f1.states[1]);
-// f1.states[1].createTransition("b", f1.states[1]);
+f1.states[0].createTransition("a", f1.states[1]);
+f1.states[0].createTransition("b", f1.states[1]);
+f1.states[1].createTransition("a", f1.states[1]);
+f1.states[1].createTransition("b", f1.states[1]);
 
-// console.log("f1 type: " );
-// f1.getType();
+console.log("f1 type: " );
+f1.getType();
 
-// let f2 = new FA();
-// f2.alphabet = ["a", "b"];
-// f2.createState();
-// f2.createState();
+let f2 = new FA();
+f2.alphabet = ["a", "b"];
+f2.createState();
+f2.createState();
 
-// f2.states[0].createTransition("a", f2.states[1]);
-// f2.states[0].createTransition("b", f2.states[1]);
-// f2.states[1].createTransition("a", f2.states[1]);
-// f2.states[1].createTransition("b", f2.states[1]);
+f2.states[0].createTransition("a", f2.states[1]);
+f2.states[0].createTransition("b", f2.states[1]);
+f2.states[1].createTransition("a", f2.states[1]);
+f2.states[1].createTransition("b", f2.states[1]);
 
-// console.log("f2 type: " );
-// f2.getType();
+console.log("f2 type: " );
+f2.getType();
 
 
 let f3 = new FA();
@@ -138,6 +141,10 @@ f3.states[1].createTransition("0", f3.states[1]);
 f3.states[1].createTransition("1", f3.states[2]);
 f3.states[2].createTransition("0", f3.states[2]);
 f3.states[2].createTransition("1", f3.states[2]);
+f3.states[2].createTransition("1", f3.states[2]);
+f3.states[2].createTransition("0", f3.states[2]);
+
+
 
 console.log("f3 type: " );
 f3.getType();
