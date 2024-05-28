@@ -125,22 +125,38 @@ class State {
 // f2.getType();
 
 
-let f3 = new FA();
+// let f3 = new FA();
 
-f3.alphabet = ["0", "1"];
-f3.createState();
-f3.createState();
-f3.createState();
+// f3.alphabet = ["0", "1"];
+// f3.createState();
+// f3.createState();
+// f3.createState();
 
-f3.states[0].createTransition("0", f3.states[1]);
-f3.states[0].createTransition("1", f3.states[0]);
-f3.states[1].createTransition("0", f3.states[1]);
-f3.states[1].createTransition("1", f3.states[2]);
-f3.states[2].createTransition("0", f3.states[2]);
-f3.states[2].createTransition("1", f3.states[2]);
+// f3.states[0].createTransition("0", f3.states[1]);
+// f3.states[0].createTransition("1", f3.states[0]);
+// f3.states[1].createTransition("0", f3.states[1]);
+// f3.states[1].createTransition("1", f3.states[2]);
+// f3.states[2].createTransition("0", f3.states[2]);
+// f3.states[2].createTransition("1", f3.states[2]);
 
-console.log("f3 type: " );
-f3.getType();
+// console.log("f3 type: " );
+// f3.getType();
+
+let f4 = new FA();
+f4.alphabet = ["a", "b"];
+f4.createState();
+f4.createState();
+f4.createState();
+
+f4.states[0].createTransition("a",f4.states[1]);
+f4.states[0].createTransition("b",f4.states[2]);
+f4.states[1].createTransition("a",f4.states[2]);
+f4.states[1].createTransition("b",f4.states[1]);
+f4.states[2].createTransition("a",f4.states[0]);
+f4.states[2].createTransition("b",f4.states[1]);
+
+console.log("f4 type: ");
+f4.getType();
 
 
 
