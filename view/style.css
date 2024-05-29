@@ -212,7 +212,6 @@ footer span{
         align-items: center;
     }
 
-
     .asideBTN button, .fa span {
         width: 100%;
     }
@@ -230,5 +229,12 @@ footer span{
         width: 100%;
     }
 
-
+    .asideBTN{
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        align-items: center;
+        gap: 0.1rem;
+        margin-top: 1rem;
+    }
 }
