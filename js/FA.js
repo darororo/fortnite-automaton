@@ -16,7 +16,7 @@ class FA {
     }
 
     makeFinalState(state) {
-        this.finalStates.push(state)
+        if(!(this.finalStates.includes(state))) this.finalStates.push(state)
     }
 
     determineType() {
@@ -122,6 +122,11 @@ class FA {
     checkStrNFA(str) {
         let currentStates = [this.states[0]];
 
+        // Empty string input
+        if(str.length === 0) {
+            currentStates = currentStates[0].epsilonTransition();
+        }
+
         for(let i = 0; i < str.length; i++) {
             let nextStates = []
 
@@ -130,12 +135,23 @@ class FA {
                 // check if the current state has any transitions using the current character
                 let hasTransition = !(currentStates[j].transitionFrom(str.charAt(i)) === undefined);
 
-                // Each current state has its own transition
-                // Add all states from every transition to the nextStates
                 if(hasTransition){
-                    currentStates[j].transitionFrom(str.charAt(i)).forEach( 
-                        s => nextStates.push(s) 
-                    );
+
+                    currentStates[j].epsilonTransition().forEach( state => {
+                        if( !(state.transitionFrom(str.charAt(i)) === undefined) ) {
+                            state.transitionFrom(str.charAt(i)).forEach( s => {
+                                if( !(nextStates.includes(s)) ) nextStates.push(s)
+                            })
+                        }
+                    })
+
+                    currentStates[j].transitionFrom(str.charAt(i)).forEach( state => {
+
+                        state.epsilonTransition().forEach( s => {
+                            if( !(nextStates.includes(s)) ) nextStates.push(s)
+                        })
+
+                    });
                 }
                 
             }
@@ -187,7 +203,40 @@ class State {
         return this.allTransitions[str];    // Returns an Array of States
     }
 
-   
+    // Return a list of all states connected by epsilons
+    epsilonTransition() {  
+        let currentStates = [this]
+    
+        let lastState = false;
+        while(!lastState) {                         
+            let hasTransition = false;  // True, if at least one state in currentStates have epsilon transition  
+            currentStates.forEach( state => {
+                if(!(state.transitionFrom("") === undefined)) { 
+                    // If each state in the current state has epsilon transition
+                    // then add each state from the transition to our current state list
+
+                    state.transitionFrom("").forEach( s => {
+                        if(!(currentStates.includes(s))) {
+                            // Check if the state is already visited
+                            // if not add it to our list
+
+                            currentStates.push(s)
+                            // Found a new state, set hasTransition flag to true to restart our loop
+                            // for check every state in currentStates for any epsilon transition 
+                            hasTransition = true;   
+
+                        }
+                    })
+                };
+            })
+
+            if(!hasTransition) {
+                lastState = true;
+            }
+        }
+        return currentStates;
+    }
+
 
 }
 
@@ -208,62 +257,73 @@ class State {
 // f1.getType();
 
 // let f2 = new FA();
-// f2.alphabet = ["a", "b"];
+// f2.alphabet = ["a", "b", "c"];
+// f2.createState();
+// f2.createState();
 // f2.createState();
 // f2.createState();
 
-// f2.states[0].createTransition("a", f2.states[1]);
-// f2.states[0].createTransition("b", f2.states[1]);
+// f2.makeFinalState(f2.states[2])
+// f2.makeFinalState(f2.states[3])
+
+
+// console.log(f2.finalStates.length)
+
+// f2.states[0].createTransition("", f2.states[2]);
+
 // f2.states[1].createTransition("a", f2.states[1]);
 // f2.states[1].createTransition("b", f2.states[1]);
+// f2.states[1].createTransition("", f2.states[2]);
+// f2.states[2].createTransition("", f2.states[3]);
+
 
 // console.log("f2 type: " );
 // f2.getType();
 
+// f2.checkStr("")
+
+// f2.states[0].epsilonTransition();
 
 
 //NFA
+console.log("F3")
 let f3 = new FA();
 
 f3.alphabet = ["0", "1", "2"];
 f3.createState();
 f3.createState();
 f3.createState();
+f3.createState();
 
-f3.makeFinalState(f3.states[2]);
+f3.makeFinalState(f3.states[1]);
+f3.makeFinalState(f3.states[3]);
 
 f3.states[0].createTransition("0", f3.states[1]);
-f3.states[0].createTransition("1", f3.states[0]);
 f3.states[0].createTransition("1", f3.states[2]);
+f3.states[0].createTransition("", f3.states[3])
 
-console.log(f3.states[0])
 
 f3.states[1].createTransition("0", f3.states[1]);
-f3.states[1].createTransition("1", f3.states[2]);
+f3.states[1].createTransition("", f3.states[3]);
 
 f3.states[2].createTransition("0", f3.states[2]);
 f3.states[2].createTransition("1", f3.states[2]);
-f3.states[2].createTransition("2", f3.states[0])
+
+f3.states[3].createTransition("", f3.states[1]);
 
 console.log("f3 type: " );
 f3.getType();
 
-f3.checkStr("0")        // FUCK NO
-f3.checkStr("1")        // FUCK YEAH
-f3.checkStr("00")       // FUCK NO
-f3.checkStr("1")        // FUCK YEAH
-f3.checkStr("11")       // FUCK YEAH
-f3.checkStr("1100")     // FUCK YEAH
-f3.checkStr("11002")    // FUCK NO
-f3.checkStr("110021")   // FUCK YEAH
+
+// console.log(f3.states[0].epsilonTransition())
+
+f3.checkStr("0")           // FUCK YES
+f3.checkStr("")            // FUCK YES
+
+f3.checkStr("1")           // FUCK NO
+f3.checkStr("11")           // FUCK NO
 
 
-// console.log(f3.states[1].transitionFrom("2"))
-
-
-
-
-// f3.traverseLinkedStates(f3.states[0]);
 
 
 
@@ -291,7 +351,4 @@ f3.checkStr("110021")   // FUCK YEAH
 // f4.checkStr("aa");  // FUCK YEAH
 // f4.checkStr("aaa"); // FUCK NO
 // f4.checkStr("aaaaa"); // FUCK YEAH
-
-
-
 
