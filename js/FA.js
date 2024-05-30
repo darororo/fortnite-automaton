@@ -3,14 +3,12 @@ const TypeFA = Object.freeze({
     NFA: 1,
 })
 
-
 class FA {
     alphabet = [];
     states = [];
     finalStates = [];
     type;
     output;
-    
 
     createState() {
         let s = new State();
@@ -119,7 +117,6 @@ class FA {
         }
 
     }
-    
 
     // Not yet supported epsilon transition 
     checkStrNFA(str) {
@@ -129,11 +126,18 @@ class FA {
             let nextStates = []
 
             for(let j = 0; j < currentStates.length; j++) {
+
+                // check if the current state has any transitions using the current character
+                let hasTransition = !(currentStates[j].transitionFrom(str.charAt(i)) === undefined);
+
                 // Each current state has its own transition
                 // Add all states from every transition to the nextStates
-                currentStates[j].transitionFrom(str.charAt(i)).forEach( 
-                    s => nextStates.push(s) 
-                );
+                if(hasTransition){
+                    currentStates[j].transitionFrom(str.charAt(i)).forEach( 
+                        s => nextStates.push(s) 
+                    );
+                }
+                
             }
 
             // all next states are our new current states 
@@ -217,6 +221,8 @@ class State {
 // f2.getType();
 
 
+
+//NFA
 let f3 = new FA();
 
 f3.alphabet = ["0", "1", "2"];
@@ -237,6 +243,7 @@ f3.states[1].createTransition("1", f3.states[2]);
 
 f3.states[2].createTransition("0", f3.states[2]);
 f3.states[2].createTransition("1", f3.states[2]);
+f3.states[2].createTransition("2", f3.states[0])
 
 console.log("f3 type: " );
 f3.getType();
@@ -247,6 +254,12 @@ f3.checkStr("00")       // FUCK NO
 f3.checkStr("1")        // FUCK YEAH
 f3.checkStr("11")       // FUCK YEAH
 f3.checkStr("1100")     // FUCK YEAH
+f3.checkStr("11002")    // FUCK NO
+f3.checkStr("110021")   // FUCK YEAH
+
+
+// console.log(f3.states[1].transitionFrom("2"))
+
 
 
 
@@ -254,7 +267,7 @@ f3.checkStr("1100")     // FUCK YEAH
 
 
 
-
+// DFA
 // let f4 = new FA();
 // f4.alphabet = ["a", "b"];
 // f4.createState();
