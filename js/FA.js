@@ -88,6 +88,14 @@ class FA {
 
         if(this.type === undefined) this.determineType();
 
+        if(str != "") {
+            for(let i = 0; i < str.length; i++) {
+                if( !(this.alphabet.includes(str.charAt(i))) ) {
+                    this.output = "Reject: Character not in alphabet"
+                }
+            }
+        }
+
         if(this.finalStates.length == 0) { 
             this.output = "Rejected: Empty Final State";
             console.log(str + ": " + this.output)
@@ -153,7 +161,6 @@ class FA {
 
                     });
                 }
-                
             }
 
             // all next states are our new current states 
@@ -175,8 +182,12 @@ class FA {
         }
 
         console.log("final state counts: " + finalStateCounts)
+    }
 
-
+    NFAtoDFA() {
+        if(this.type == TypeFA.NFA) {
+            
+        }
     }
  
 }
@@ -256,33 +267,32 @@ class State {
 // console.log("f1 type: " );
 // f1.getType();
 
-// let f2 = new FA();
-// f2.alphabet = ["a", "b", "c"];
-// f2.createState();
-// f2.createState();
-// f2.createState();
-// f2.createState();
+let f2 = new FA();
+f2.alphabet = ["a", "b", "c"];
+f2.createState();
+f2.createState();
+f2.createState();
+f2.createState();
 
-// f2.makeFinalState(f2.states[2])
-// f2.makeFinalState(f2.states[3])
-
-
-// console.log(f2.finalStates.length)
-
-// f2.states[0].createTransition("", f2.states[2]);
-
-// f2.states[1].createTransition("a", f2.states[1]);
-// f2.states[1].createTransition("b", f2.states[1]);
-// f2.states[1].createTransition("", f2.states[2]);
-// f2.states[2].createTransition("", f2.states[3]);
+f2.makeFinalState(f2.states[2])
+f2.makeFinalState(f2.states[3])
 
 
-// console.log("f2 type: " );
-// f2.getType();
+console.log(f2.finalStates.length)
 
-// f2.checkStr("")
+f2.states[0].createTransition("", f2.states[2]);
 
-// f2.states[0].epsilonTransition();
+f2.states[1].createTransition("a", f2.states[1]);
+f2.states[1].createTransition("b", f2.states[1]);
+f2.states[1].createTransition("", f2.states[2]);
+f2.states[2].createTransition("", f2.states[3]);
+
+
+console.log("f2 type: " );
+f2.getType();
+
+f2.checkStr("")
+
 
 
 //NFA
@@ -327,6 +337,7 @@ f3.checkStr("11")           // FUCK NO
 
 
 
+
 // DFA
 // let f4 = new FA();
 // f4.alphabet = ["a", "b"];
@@ -352,3 +363,19 @@ f3.checkStr("11")           // FUCK NO
 // f4.checkStr("aaa"); // FUCK NO
 // f4.checkStr("aaaaa"); // FUCK YEAH
 
+
+let f5 = new FA();
+f5.createState();
+f5.createState();
+f5.createState();
+f5.alphabet = ["a"]
+
+f5.states[0].createTransition("", f5.states[0])
+f5.states[0].createTransition("", f5.states[1])
+f5.states[1].createTransition("", f5.states[0])
+
+f5.states[0].epsilonTransition();
+
+console.log(f5.states[0].epsilonTransition())
+
+f5.checkStr("b")
