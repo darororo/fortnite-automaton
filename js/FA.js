@@ -15,6 +15,10 @@ class FA {
         this.states.push(s);
     }
 
+    createTransition(fromStateIndex, destStateIndex, char) {
+        this.states[fromStateIndex].createTransition(char, this.states[destStateIndex]);
+    }
+
     makeFinalState(state) {
         if(!(this.finalStates.includes(state))) this.finalStates.push(state)
     }
@@ -180,7 +184,7 @@ class FA {
     }
 
     getNFAtoDFA() {
-        if(!(this.type == undefined)) this.determineType();
+        if(this.type == undefined) this.determineType();
 
         if(this.type == TypeFA.DFA) return;
 
@@ -275,10 +279,7 @@ class FA {
                             }
                         })
                     }
-                    
-
                 }
-
             }
 
             dfa.alphabet = this.alphabet;
@@ -286,6 +287,16 @@ class FA {
                 
             return dfa;
         }
+    }
+
+    minimizeDFA() {
+        if(this.type == TypeFA.NFA) return;
+
+        let accessibleStates = [];
+
+
+
+
     }
  
 }
@@ -501,88 +512,148 @@ class State {
 
 // Chapter 5 homework NFA To DFA 1
 // Accept strings containing abb
-let f6 = new FA();
-f6.alphabet = ["a", "b"];
-f6.createState();
-f6.createState();
-f6.createState();
-f6.createState();
+// let f6 = new FA();
+// f6.alphabet = ["a", "b"];
+// f6.createState();
+// f6.createState();
+// f6.createState();
+// f6.createState();
 
-f6.states[0].createTransition("a", f6.states[0]);
-f6.states[0].createTransition("b", f6.states[0]);
-f6.states[0].createTransition("a", f6.states[1]);
+// f6.states[0].createTransition("a", f6.states[0]);
+// f6.states[0].createTransition("b", f6.states[0]);
+// f6.states[0].createTransition("a", f6.states[1]);
 
-f6.states[1].createTransition("b", f6.states[2]);
+// f6.states[1].createTransition("b", f6.states[2]);
 
-f6.states[2].createTransition("b", f6.states[3]);
+// f6.states[2].createTransition("b", f6.states[3]);
 
-f6.states[3].createTransition("a", f6.states[3]);
-f6.states[3].createTransition("b", f6.states[3]);
+// f6.states[3].createTransition("a", f6.states[3]);
+// f6.states[3].createTransition("b", f6.states[3]);
 
-f6.makeFinalState(f6.states[3]);
-f6.getType()
-f6.checkStr("abab") //FUCK NO
-f6.checkStr("ababb") //FUCK YEAH
-f6.checkStr("ababba") //FUCK YEAH
+// f6.makeFinalState(f6.states[3]);
+// f6.getType()
+// f6.checkStr("abab") //FUCK NO
+// f6.checkStr("ababb") //FUCK YEAH
+// f6.checkStr("ababba") //FUCK YEAH
 
 
 
-let f6DFA = f6.getNFAtoDFA();   // 4 states when turned into DFA
-f6DFA.getType()
+// let f6DFA = f6.getNFAtoDFA();   // 4 states when turned into DFA
+// f6DFA.getType()
 
-f6DFA.checkStr("abab") //FUCK NO
-f6DFA.checkStr("ababb") //FUCK YEAH
-f6DFA.checkStr("ababba") //FUCK YEAH
+// f6DFA.checkStr("abab") //FUCK NO
+// f6DFA.checkStr("ababb") //FUCK YEAH
+// f6DFA.checkStr("ababba") //FUCK YEAH
 
 
 
 // Chapter 5 homework NFA To DFA 2
 // Starts with ab; end with ba
-let f7 = new FA();
-f7.alphabet = ["a", "b"];
+// let f7 = new FA();
+// f7.alphabet = ["a", "b"];
 
-f7.createState();
-f7.createState();
-f7.createState();
-f7.createState();
-f7.createState();
+// f7.createState();
+// f7.createState();
+// f7.createState();
+// f7.createState();
+// f7.createState();
 
-f7.makeFinalState(f7.states[4]);
-
-
-f7.states[0].createTransition("a", f7.states[1]);
-
-f7.states[1].createTransition("b", f7.states[2]);
-
-f7.states[2].createTransition("a", f7.states[2]);
-f7.states[2].createTransition("b", f7.states[2]);
-f7.states[2].createTransition("b", f7.states[3]);
-
-f7.states[3].createTransition("a", f7.states[4]);
+// f7.makeFinalState(f7.states[4]);
 
 
-f7.makeFinalState(f7.states[4]);
+// f7.states[0].createTransition("a", f7.states[1]);
 
-f7.getType()
+// f7.states[1].createTransition("b", f7.states[2]);
 
-f7.checkStr("baaba");   // FUCK NO
-f7.checkStr("aba");   // FUCK NO
+// f7.states[2].createTransition("a", f7.states[2]);
+// f7.states[2].createTransition("b", f7.states[2]);
+// f7.states[2].createTransition("b", f7.states[3]);
 
-f7.checkStr("ababaaba"); // FUCK YEAH
-f7.checkStr("abba"); // FUCK YEAH
-
-
-
-let f7DFA = f7.getNFAtoDFA(); // 6 states when turned into DFA
-f7DFA.getType();
-
-f7DFA.checkStr("baaba");   // FUCK NO
-f7DFA.checkStr("aba");   // FUCK NO
+// f7.states[3].createTransition("a", f7.states[4]);
 
 
-f7DFA.checkStr("ababaaba"); // FUCK YEAH
-f7DFA.checkStr("abba"); // FUCK YEAH
+// f7.makeFinalState(f7.states[4]);
+
+// f7.getType()
+
+// f7.checkStr("baaba");   // FUCK NO
+// f7.checkStr("aba");   // FUCK NO
+
+// f7.checkStr("ababaaba"); // FUCK YEAH
+// f7.checkStr("abba"); // FUCK YEAH
 
 
 
+// let f7DFA = f7.getNFAtoDFA(); // 6 states when turned into DFA
 
+// console.log("DFA STATES: " + f7DFA.states.length)
+// f7DFA.getType();
+
+// f7DFA.checkStr("baaba");   // FUCK NO
+// f7DFA.checkStr("aba");   // FUCK NO
+
+
+// f7DFA.checkStr("ababaaba"); // FUCK YEAH
+// f7DFA.checkStr("abba"); // FUCK YEAH
+
+
+// let f8 = new FA();
+
+// f8.alphabet = ["a", "b"];
+
+// f8.createState();
+// f8.createState();
+
+// f8.states[0].createTransition("a", f8.states[1]);
+
+// f8.getType()
+
+// f8.makeFinalState(f8.states[1])
+
+// f8.checkStr("a")
+// f8.checkStr("b")
+
+
+// let f8DFA = f8.getNFAtoDFA();
+
+// // console.log(f8DFA);
+// f8DFA.checkStr("a")
+// f8DFA.checkStr("b")
+
+// Chapter 5 homework NFA To DFA 3
+
+let f9 = new FA();
+f9.alphabet = ["a", "b"];
+
+for(let i = 0; i < 6; i++) f9.createState();
+
+f9.makeFinalState(f9.states[3]);
+
+// f9.states[0].createTransition("b", f9.states[1]);
+
+f9.createTransition(0, 1, "b"); // new wrapper function
+
+f9.createTransition(1, 2, "a"); 
+f9.createTransition(1, 5, "b"); 
+f9.createTransition(1, 2, ""); 
+
+f9.createTransition(2, 1, "b"); 
+f9.createTransition(2, 3, "b"); 
+
+f9.createTransition(3, 4, "a"); 
+
+f9.createTransition(4, 3, ""); 
+f9.createTransition(4, 2, "b"); 
+f9.createTransition(4, 5, "a"); 
+
+f9.createTransition(5, 2, ""); 
+f9.createTransition(5, 3, "a"); 
+
+
+console.log(f9);
+
+let f9DFA = f9.getNFAtoDFA();   // 8 states, 4 final states; like in the homework
+
+console.log(f9DFA)
+
+console.log(f9.type);
