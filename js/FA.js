@@ -128,7 +128,6 @@ class FA {
 
     }
 
-    // Not yet supported epsilon transition 
     checkStrNFA(str) {
         let currentStates = [this.states[0]];
 
@@ -290,13 +289,29 @@ class FA {
     }
 
     minimizeDFA() {
+        if(this.type == undefined) this.determineType();
+
         if(this.type == TypeFA.NFA) return;
 
-        let accessibleStates = [];
+        let accessibleStates = [this.states[0]];
 
+        let allStatesReached = false;
+        while(!allStatesReached) {
+            allStatesReached = true;
 
+            for(let i = 0; i < this.alphabet.length; i++) {
+                let char = this.alphabet[i];
+                accessibleStates.forEach(state => {
+                    if( !(accessibleStates.includes(state.transitionFrom(char)[0])) ) {
+                        accessibleStates.push(state.transitionFrom(char)[0]);
+                        allStatesReached = false;
+                    }
+               })
+            }
+        }
+        accessibleStates.forEach(state => console.log(this.states.indexOf(state)))
 
-
+        
     }
  
 }
@@ -355,26 +370,6 @@ class State {
         }
         return currentStates;
     }
-
-    // Epsilon closure of all states yielded from 
-    // the transition on a character of this state ; including this state
-    // EClosureTransitionFrom(char) {
-    //     let states = this.epsilonClosure();
-
-    //     this.epsilonClosure().forEach(state => {
-    //         state.transitionFrom(char).forEach(s => {
-    //             if(!(states.includes(s))) states.push(s);
-    //         })
-    //     })
-
-    //     states.forEach(state => {
-    //         state.epsilonClosure().forEach(s => {
-    //             if(!(states.includes(s))) states.push(s);
-    //         })
-    //     })
-
-    //     return states;
-    // }
 
 }
 
@@ -622,38 +617,98 @@ class State {
 
 // Chapter 5 homework NFA To DFA 3
 
-let f9 = new FA();
-f9.alphabet = ["a", "b"];
+// let f9 = new FA();
+// f9.alphabet = ["a", "b"];
 
-for(let i = 0; i < 6; i++) f9.createState();
+// for(let i = 0; i < 6; i++) f9.createState();
 
-f9.makeFinalState(f9.states[3]);
+// f9.makeFinalState(f9.states[3]);
 
-// f9.states[0].createTransition("b", f9.states[1]);
+// // f9.states[0].createTransition("b", f9.states[1]);
 
-f9.createTransition(0, 1, "b"); // new wrapper function
+// f9.createTransition(0, 1, "b"); // new wrapper function
 
-f9.createTransition(1, 2, "a"); 
-f9.createTransition(1, 5, "b"); 
-f9.createTransition(1, 2, ""); 
+// f9.createTransition(1, 2, "a"); 
+// f9.createTransition(1, 5, "b"); 
+// f9.createTransition(1, 2, ""); 
 
-f9.createTransition(2, 1, "b"); 
-f9.createTransition(2, 3, "b"); 
+// f9.createTransition(2, 1, "b"); 
+// f9.createTransition(2, 3, "b"); 
 
-f9.createTransition(3, 4, "a"); 
+// f9.createTransition(3, 4, "a"); 
 
-f9.createTransition(4, 3, ""); 
-f9.createTransition(4, 2, "b"); 
-f9.createTransition(4, 5, "a"); 
+// f9.createTransition(4, 3, ""); 
+// f9.createTransition(4, 2, "b"); 
+// f9.createTransition(4, 5, "a"); 
 
-f9.createTransition(5, 2, ""); 
-f9.createTransition(5, 3, "a"); 
+// f9.createTransition(5, 2, ""); 
+// f9.createTransition(5, 3, "a"); 
 
 
-console.log(f9);
+// console.log(f9);
 
-let f9DFA = f9.getNFAtoDFA();   // 8 states, 4 final states; like in the homework
+// let f9DFA = f9.getNFAtoDFA();   // 8 states, 4 final states; like in the homework
 
-console.log(f9DFA)
+// console.log(f9DFA)
 
-console.log(f9.type);
+// console.log(f9.type);
+
+// DFA minimization TEST
+
+
+// Chapter 5 Homework Minimize DFA 1
+// let f10 = new FA();
+// f10.alphabet = ["a", "b"];
+// f10.makeFinalState(f10.states[1]);
+// f10.makeFinalState(f10.states[3]);
+
+// for(let i = 0; i < 5; i++) f10.createState();
+
+// f10.createTransition(0, 1, "a");
+// f10.createTransition(0, 1, "b");
+
+// f10.createTransition(1, 2, "a");
+// f10.createTransition(1, 2, "b");
+
+// f10.createTransition(2, 3, "a");
+// f10.createTransition(2, 3, "b");
+
+// f10.createTransition(3, 2, "a");
+// f10.createTransition(3, 2, "b");
+
+// f10.createTransition(4, 3, "a");
+// f10.createTransition(4, 2, "b");
+
+// f10.getType();
+
+// f10.minimizeDFA();
+
+
+// Chapter 5 Homework Minimize DFA 2
+let f11 = new FA();
+f11.alphabet = ["0", "1"]
+
+for(let i = 0; i < 6; i++) f11.createState();
+
+
+f11.createTransition(0, 1, "0");
+f11.createTransition(0, 2, "1");
+
+f11.createTransition(1, 0, "0");
+f11.createTransition(1, 3, "1");
+
+f11.createTransition(2, 4, "0");
+f11.createTransition(2, 5, "1");
+
+f11.createTransition(3, 4, "0");
+f11.createTransition(3, 5, "1");
+
+f11.createTransition(4, 4, "0");
+f11.createTransition(4, 5, "1");
+
+f11.createTransition(5, 5, "0");
+f11.createTransition(5, 5, "1");
+
+f11.getType();
+
+f11.minimizeDFA();
