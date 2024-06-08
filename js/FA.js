@@ -311,7 +311,40 @@ class FA {
         }
         accessibleStates.forEach(state => console.log(this.states.indexOf(state)))
 
-        
+        let unmarkedPairs = [];
+        let markedPairs = [];
+
+        for(let i = 0; i < accessibleStates.length - 1; i++) {
+            for(let j = i + 1; j < accessibleStates.length; j++) {
+                if( i == j) continue; 
+
+                console.log('i: ' + i + " j: " + j);
+
+                let s1 = accessibleStates[i];
+                let s2 = accessibleStates[j];
+
+                let pair = [s1, s2];
+                unmarkedPairs.push(pair);
+            }
+        }
+
+        console.log("unmarked pairs length: " + unmarkedPairs.length);
+
+        // First iteration: marking every pair with final states
+        unmarkedPairs.forEach(pair => {
+            if( !(pair.every(s => this.finalStates.includes(s))) ) {
+                if(pair.some(s => this.finalStates.includes(s))) markedPairs.push(pair)
+            }
+        })
+
+        console.log("marked pairs length: " + markedPairs.length);
+
+
+
+        // for(let i = 0; i < unmarkedPairs.length; i++) {
+
+        // }
+
     }
  
 }
@@ -659,10 +692,10 @@ class State {
 // Chapter 5 Homework Minimize DFA 1
 // let f10 = new FA();
 // f10.alphabet = ["a", "b"];
-// f10.makeFinalState(f10.states[1]);
-// f10.makeFinalState(f10.states[3]);
 
 // for(let i = 0; i < 5; i++) f10.createState();
+// f10.makeFinalState(f10.states[1]);
+// f10.makeFinalState(f10.states[3]);
 
 // f10.createTransition(0, 1, "a");
 // f10.createTransition(0, 1, "b");
@@ -687,9 +720,11 @@ class State {
 // Chapter 5 Homework Minimize DFA 2
 let f11 = new FA();
 f11.alphabet = ["0", "1"]
+f11.makeFinalState()
 
 for(let i = 0; i < 6; i++) f11.createState();
-
+f11.makeFinalState(f11.states[2]);
+f11.makeFinalState(f11.states[3]);
 
 f11.createTransition(0, 1, "0");
 f11.createTransition(0, 2, "1");
@@ -712,3 +747,6 @@ f11.createTransition(5, 5, "1");
 f11.getType();
 
 f11.minimizeDFA();
+
+
+
