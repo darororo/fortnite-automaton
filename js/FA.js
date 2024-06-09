@@ -315,23 +315,22 @@ class FA {
         accessibleStates.forEach(state => accessibleIndex.push(this.states.indexOf(state)));
         this.finalStates.forEach(state => finalStateIndex.push(this.states.indexOf(state)));
 
-        console.log(accessibleIndex)
-        console.log(finalStateIndex)
-
         let StatePairs = [];
 
+
+        // Initialize Table for the table filling method
+        // Unmarked: False; Marked: True
         for(let i = 0; i < this.states.length; i++) {
             let pair = [];
 
             for(let j = 0; j < this.states.length; j++) {
-                console.log('i: ' + i + " j: " + j);    
                 pair.push(false);
             }
 
             StatePairs.push(pair)
         }
 
-        // First iteration: mark every pair with a final state
+        // First iteration: mark every pair with a final state; don't mark pairs with 2 final states
         for(let i = 0; i < StatePairs.length; i++) {
             for(let j = i + 1; j < StatePairs[i].length; j++) {
                 if(!accessibleIndex.includes(i) || !accessibleIndex.includes(j)) continue;
@@ -342,24 +341,29 @@ class FA {
                 if(finalStateIndex.includes(i) || finalStateIndex.includes(j)) StatePairs[i][j] = true;
             }
         }
-        console.log(StatePairs)
 
+
+        // Next iterations; check every unmarked pairs
         for(let cIndex = 0; cIndex < this.alphabet.length; cIndex++) {
             let char = this.alphabet[cIndex];
             
             for(let i = 0; i < StatePairs.length; i++) {
+                if(!accessibleIndex.includes(i)) continue;
 
                 for(let j = i + 1; j < StatePairs[i].length; j++) {
-                    if(!accessibleIndex.includes(i) || !accessibleIndex.includes(j)) continue;
+                    if(!accessibleIndex.includes(j)) continue;
 
                     if(!StatePairs[i][j]) {
                         let s1 = this.states[i].transitionFrom(char)[0];
                         let s2 = this.states[j].transitionFrom(char)[0];
                         
+                        // index of the pair recieved from the transition of an unmarked pair
                         let i1 = this.states.indexOf(s1);
                         let i2 = this.states.indexOf(s2);
 
                         if(StatePairs[i1][i2]) {
+                            // if the transition of a pair gives a marked pair
+                            // Mark the pair that perform the transition
                             StatePairs[i][j] = true;
                         }
                     }
@@ -367,7 +371,6 @@ class FA {
             }
         }
 
-        console.log(StatePairs)
 
         let minimizedDFA = new FA();
         let minStates = [];
@@ -376,8 +379,7 @@ class FA {
         for(let i = 0; i < StatePairs.length; i++) {
             if(!accessibleIndex.includes(i)) continue;
 
-
-            let stateExisted = false;
+            let stateExisted = false;   // if the current state already exists in a previous state group
             minStates.forEach(states => {
                 if(states.includes(i)) {
                     stateExisted = true
@@ -389,32 +391,34 @@ class FA {
             let group = [i];
     
             for(let j = i + 1; j < StatePairs[i].length; j++) {
+                // check the states along the i-th column
+
                 if(!accessibleIndex.includes(j)) continue;
 
                 if(!StatePairs[i][j]) {
-                    group.push(j);
+                    group.push(j); // if a pair is unmarked; add it to the current state group
 
                     for(let k = i + 1; k < j; k++) {
+                        // check the states along the j-th row
+
                         if(!accessibleIndex.includes(k)) continue;
 
                         if(!StatePairs[k][j]) {
-                            group.push(k);
+                            group.push(k); // if a pair is unmarked; add it to the current state group
                         }
                     }
-
                 }
-                
             }
+
             minStates.push(group)
         }
-
-        console.log("MIN STATES TEXAS")
-        console.log(minStates)
 
         for(let i = 0; i < minStates.length; i++) {
             minimizedDFA.createState();
             finalStateIndex.forEach(index => {
-                if(minStates[i].includes(index)) minimizedDFA.makeFinalState(minimizedDFA.states[i]);
+                if(minStates[i].includes(index)) {
+                    minimizedDFA.makeFinalState(minimizedDFA.states[i]);
+                }   
             })
         }
 
