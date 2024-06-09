@@ -254,7 +254,7 @@ class FA {
                     let qiFound = false;
                     let qiIndex;    // index of qi in the supersets; also the index of a new DFA state 
 
-                    for(let i = 0; i < dfaSets.length; i++) {   // Refactor: Might be able to put in the above loop
+                    for(let i = 0; i < dfaSets.length; i++) {   // Refactor: Might be able to put in the above loop or use indexing instead
                         if(qi.length == 0) {
                             if(dfaSets[i].length == qi.length) qiFound = true;
                         } else if(dfaSets[i].length == qi.length) {
@@ -288,7 +288,7 @@ class FA {
         }
     }
 
-    minimizeDFA() {
+    getMinimizedDFA() {
         if(this.type == undefined) this.determineType();
 
         if(this.type == TypeFA.NFA) return;
@@ -413,6 +413,8 @@ class FA {
             minStates.push(group)
         }
 
+
+        // Create states for the minimized DFA
         for(let i = 0; i < minStates.length; i++) {
             minimizedDFA.createState();
             finalStateIndex.forEach(index => {
@@ -422,6 +424,7 @@ class FA {
             })
         }
 
+        // Create transitions for each state of the minimized DFA
         for(let i = 0; i < accessibleIndex.length; i++) {
             let stateIndex = accessibleIndex[i];
 
@@ -446,7 +449,7 @@ class FA {
                 minimizedDFA.createTransition(minIndex, minTransIndex, char);
             }
         }
-    
+        
         return minimizedDFA;
     }
  
@@ -793,42 +796,42 @@ class State {
 
 
 // Chapter 5 Homework Minimize DFA 1
-// let f10 = new FA();
-// f10.alphabet = ["a", "b"];
+let f10 = new FA();
+f10.alphabet = ["a", "b"];
 
-// for(let i = 0; i < 5; i++) f10.createState();
-// f10.makeFinalState(f10.states[1]);
-// f10.makeFinalState(f10.states[3]);
+for(let i = 0; i < 5; i++) f10.createState();
+f10.makeFinalState(f10.states[1]);
+f10.makeFinalState(f10.states[3]);
 
-// f10.createTransition(0, 1, "a");
-// f10.createTransition(0, 1, "b");
+f10.createTransition(0, 1, "a");
+f10.createTransition(0, 1, "b");
 
-// f10.createTransition(1, 2, "a");
-// f10.createTransition(1, 2, "b");
+f10.createTransition(1, 2, "a");
+f10.createTransition(1, 2, "b");
 
-// f10.createTransition(2, 3, "a");
-// f10.createTransition(2, 3, "b");
+f10.createTransition(2, 3, "a");
+f10.createTransition(2, 3, "b");
 
-// f10.createTransition(3, 2, "a");
-// f10.createTransition(3, 2, "b");
+f10.createTransition(3, 2, "a");
+f10.createTransition(3, 2, "b");
 
-// f10.createTransition(4, 3, "a");
-// f10.createTransition(4, 2, "b");
+f10.createTransition(4, 3, "a");
+f10.createTransition(4, 2, "b");
 
-// f10.getType();
+f10.getType();
 
-// f10.checkStr("a");
-// f10.checkStr("ab");
-// f10.checkStr("aba");
-// f10.checkStr("aaa")
+f10.checkStr("a");
+f10.checkStr("ab");
+f10.checkStr("aba");
+f10.checkStr("aaa")
 
-// let f10Min = f10.minimizeDFA();
-// f10Min.getType();
+let f10Min = f10.getMinimizedDFA();
+f10Min.getType();
 
-// f10Min.checkStr("a");
-// f10Min.checkStr("ab");
-// f10Min.checkStr("aba");
-// f10Min.checkStr("aaa")
+f10Min.checkStr("a");
+f10Min.checkStr("ab");
+f10Min.checkStr("aba");
+f10Min.checkStr("aaa")
 
 
 // Chapter 5 Homework Minimize DFA 2
@@ -866,7 +869,7 @@ f11.checkStr("011");    // FUCK NO
 f11.checkStr("010");    // FUCK NO
 
 
-let f11Min = f11.minimizeDFA();
+let f11Min = f11.getMinimizedDFA();
 f11.getType()
 
 f11Min.checkStr("1");      // FUCK YEAH
