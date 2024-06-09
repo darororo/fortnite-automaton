@@ -288,97 +288,6 @@ class FA {
         }
     }
 
-
-    // minimize by checking states
-    // minimizeDFA() {
-    //     if(this.type == undefined) this.determineType();
-
-    //     if(this.type == TypeFA.NFA) return;
-
-    //     let accessibleStates = [this.states[0]];
-
-    //     let allStatesReached = false;
-    //     while(!allStatesReached) {
-    //         allStatesReached = true;
-
-    //         for(let i = 0; i < this.alphabet.length; i++) {
-    //             let char = this.alphabet[i];
-    //             accessibleStates.forEach(state => {
-    //                 if( !(accessibleStates.includes(state.transitionFrom(char)[0])) ) {
-    //                     accessibleStates.push(state.transitionFrom(char)[0]);
-    //                     allStatesReached = false;
-    //                 }
-    //            })
-    //         }
-    //     }
-    //     accessibleStates.forEach(state => console.log(this.states.indexOf(state)))
-
-    //     let unmarkedPairs = [];
-    //     let markedPairs = [];
-
-    //     for(let i = 0; i < accessibleStates.length - 1; i++) {
-    //         for(let j = i + 1; j < accessibleStates.length; j++) {
-    //             if( i == j) continue; 
-
-    //             console.log('i: ' + i + " j: " + j);
-
-    //             let s1 = accessibleStates[i];
-    //             let s2 = accessibleStates[j];
-
-    //             let pair = [s1, s2];
-    //             unmarkedPairs.push(pair);
-    //         }
-    //     }
-
-    //     console.log("unmarked pairs length: " + unmarkedPairs.length);
-
-    //     let tempUnmarked = [];
-
-    //     // First iteration: mark every pair with a final state
-    //     for(let i = 0; i < unmarkedPairs.length; i++) {
-    //         if( !(unmarkedPairs[i].every(s => this.finalStates.includes(s))) ) {
-    //             if(unmarkedPairs[i].some(s => this.finalStates.includes(s))) {
-    //                 markedPairs.push(unmarkedPairs[i]);
-    //             } else {
-    //                 tempUnmarked.push(unmarkedPairs[i]);
-    //             }
-    //         } else {
-    //             tempUnmarked.push(unmarkedPairs[i]);
-    //         }
-    //     }
-
-    //     console.log("marked pairs length: " + markedPairs.length);
-    //     console.log("unmarked pairs length: " + unmarkedPairs.length);
-    //     console.log("temp pairs length: " + tempUnmarked.length);
-
-    //     unmarkedPairs = tempUnmarked;   // new Unmarked Pairs
-
-    //     let keepMarking = true;
-    //     while(keepMarking) {
-    //         for(let i = 0; i < this.alphabet.length; i++) {
-    //             let char = this.alphabet[i];
-    //             let pairTransition = [];
-
-    //             for(let j = 0; j < unmarkedPairs.length; j++) {
-    //                 unmarkedPairs[j].forEach(state => {
-    //                     pairTransition.push(state.transitionFrom(char)[0]);
-    //                 })
-    //             }
-
-    //             pairTransition.forEach(state => {
-                    
-    //             })
-
-                
-    //         }
-
-    //         keepMarking = false;
-            
-    //     }
-
-    // }
-
-    // minimize by indexing
     minimizeDFA() {
         if(this.type == undefined) this.determineType();
 
@@ -410,7 +319,6 @@ class FA {
         console.log(accessibleIndex)
         console.log(finalStateIndex)
 
-
         let StatePairs = [];
 
         for(let i = 0; i < this.states.length; i++) {
@@ -431,7 +339,10 @@ class FA {
         // First iteration: mark every pair with a final state
         for(let i = 0; i < StatePairs.length; i++) {
             for(let j = i + 1; j < StatePairs[i].length; j++) {
+                if(!accessibleIndex.includes(i) || !accessibleIndex.includes(j)) continue;
+
                 if(i == j) continue;
+
                 if(finalStateIndex.includes(i) && finalStateIndex.includes(j)) continue;
                 if(finalStateIndex.includes(i) || finalStateIndex.includes(j)) StatePairs[i][j] = true;
             }
@@ -444,6 +355,8 @@ class FA {
             for(let i = 0; i < StatePairs.length; i++) {
 
                 for(let j = i + 1; j < StatePairs[i].length; j++) {
+                    if(!accessibleIndex.includes(i) || !accessibleIndex.includes(j)) continue;
+
                     if(!StatePairs[i][j]) {
                         let s1 = this.states[i].transitionFrom(char)[0];
                         let s2 = this.states[j].transitionFrom(char)[0];
@@ -456,14 +369,66 @@ class FA {
                         if(StatePairs[i1][i2]) {
                             StatePairs[i][j] = true;
                         }
-
-                        
                     }
                 }
             }
         }
 
         console.log(StatePairs)
+
+        let minimizedDFA = new FA();
+        let minStates = []
+
+        for(let i = 0; i < StatePairs.length; i++) {
+            if(!accessibleIndex.includes(i)) continue;
+
+
+            let stateExisted = false;
+            minStates.forEach(states => {
+                if(states.includes(i)) {
+                    stateExisted = true
+                } else {
+                    console.log("DOESNT EXIST IN LOCAL GROUP")
+                    console.log(i)
+                    
+                };
+            })
+            
+            if(stateExisted) continue;
+
+            let group = [i];
+    
+            for(let j = i + 1; j < StatePairs[i].length; j++) {
+                if(!accessibleIndex.includes(j)) continue;
+
+                if(!StatePairs[i][j]) {
+                    console.log("i: " + i + " j: " + j + " PUSHING TO LOCAL GROUP")
+                    group.push(j);
+
+                    for(let k = i + 1; k < j; k++) {
+                        if(!accessibleIndex.includes(k)) continue;
+
+                        if(!StatePairs[k][j]) {
+                            console.log("j: " + j + " k: " + k + " PUSHING TO LOCAL LOCAL GROUP")
+                            group.push(k);
+                        }
+                    }
+
+                }
+                
+            }
+            console.log(i)
+            console.log(group)
+            minStates.push(group)
+            
+        }
+
+        console.log("MIN STATES TEXAS")
+        console.log(minStates)
+
+        for(let i = 0; i < minStates.length; i++) minimizedDFA.createState();
+
+
 
     }
  
@@ -810,62 +775,62 @@ class State {
 
 
 // Chapter 5 Homework Minimize DFA 1
-// let f10 = new FA();
-// f10.alphabet = ["a", "b"];
+let f10 = new FA();
+f10.alphabet = ["a", "b"];
 
-// for(let i = 0; i < 5; i++) f10.createState();
-// f10.makeFinalState(f10.states[1]);
-// f10.makeFinalState(f10.states[3]);
+for(let i = 0; i < 5; i++) f10.createState();
+f10.makeFinalState(f10.states[1]);
+f10.makeFinalState(f10.states[3]);
 
-// f10.createTransition(0, 1, "a");
-// f10.createTransition(0, 1, "b");
+f10.createTransition(0, 1, "a");
+f10.createTransition(0, 1, "b");
 
-// f10.createTransition(1, 2, "a");
-// f10.createTransition(1, 2, "b");
+f10.createTransition(1, 2, "a");
+f10.createTransition(1, 2, "b");
 
-// f10.createTransition(2, 3, "a");
-// f10.createTransition(2, 3, "b");
+f10.createTransition(2, 3, "a");
+f10.createTransition(2, 3, "b");
 
-// f10.createTransition(3, 2, "a");
-// f10.createTransition(3, 2, "b");
+f10.createTransition(3, 2, "a");
+f10.createTransition(3, 2, "b");
 
-// f10.createTransition(4, 3, "a");
-// f10.createTransition(4, 2, "b");
+f10.createTransition(4, 3, "a");
+f10.createTransition(4, 2, "b");
 
-// f10.getType();
+f10.getType();
 
-// f10.minimizeDFA();
+f10.minimizeDFA();
 
 
 // Chapter 5 Homework Minimize DFA 2
-let f11 = new FA();
-f11.alphabet = ["0", "1"]
+// let f11 = new FA();
+// f11.alphabet = ["0", "1"]
 
-for(let i = 0; i < 6; i++) f11.createState();
-f11.makeFinalState(f11.states[2]);
-f11.makeFinalState(f11.states[3]);
+// for(let i = 0; i < 6; i++) f11.createState();
+// f11.makeFinalState(f11.states[2]);
+// f11.makeFinalState(f11.states[3]);
 
-f11.createTransition(0, 1, "0");
-f11.createTransition(0, 2, "1");
+// f11.createTransition(0, 1, "0");
+// f11.createTransition(0, 2, "1");
 
-f11.createTransition(1, 0, "0");
-f11.createTransition(1, 3, "1");
+// f11.createTransition(1, 0, "0");
+// f11.createTransition(1, 3, "1");
 
-f11.createTransition(2, 4, "0");
-f11.createTransition(2, 5, "1");
+// f11.createTransition(2, 4, "0");
+// f11.createTransition(2, 5, "1");
 
-f11.createTransition(3, 4, "0");
-f11.createTransition(3, 5, "1");
+// f11.createTransition(3, 4, "0");
+// f11.createTransition(3, 5, "1");
 
-f11.createTransition(4, 4, "0");
-f11.createTransition(4, 5, "1");
+// f11.createTransition(4, 4, "0");
+// f11.createTransition(4, 5, "1");
 
-f11.createTransition(5, 5, "0");
-f11.createTransition(5, 5, "1");
+// f11.createTransition(5, 5, "0");
+// f11.createTransition(5, 5, "1");
 
-f11.getType();
+// f11.getType();
 
-f11.minimizeDFA();
+// f11.minimizeDFA();
 
 
 
