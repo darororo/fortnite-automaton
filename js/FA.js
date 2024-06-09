@@ -288,6 +288,97 @@ class FA {
         }
     }
 
+
+    // minimize by checking states
+    // minimizeDFA() {
+    //     if(this.type == undefined) this.determineType();
+
+    //     if(this.type == TypeFA.NFA) return;
+
+    //     let accessibleStates = [this.states[0]];
+
+    //     let allStatesReached = false;
+    //     while(!allStatesReached) {
+    //         allStatesReached = true;
+
+    //         for(let i = 0; i < this.alphabet.length; i++) {
+    //             let char = this.alphabet[i];
+    //             accessibleStates.forEach(state => {
+    //                 if( !(accessibleStates.includes(state.transitionFrom(char)[0])) ) {
+    //                     accessibleStates.push(state.transitionFrom(char)[0]);
+    //                     allStatesReached = false;
+    //                 }
+    //            })
+    //         }
+    //     }
+    //     accessibleStates.forEach(state => console.log(this.states.indexOf(state)))
+
+    //     let unmarkedPairs = [];
+    //     let markedPairs = [];
+
+    //     for(let i = 0; i < accessibleStates.length - 1; i++) {
+    //         for(let j = i + 1; j < accessibleStates.length; j++) {
+    //             if( i == j) continue; 
+
+    //             console.log('i: ' + i + " j: " + j);
+
+    //             let s1 = accessibleStates[i];
+    //             let s2 = accessibleStates[j];
+
+    //             let pair = [s1, s2];
+    //             unmarkedPairs.push(pair);
+    //         }
+    //     }
+
+    //     console.log("unmarked pairs length: " + unmarkedPairs.length);
+
+    //     let tempUnmarked = [];
+
+    //     // First iteration: mark every pair with a final state
+    //     for(let i = 0; i < unmarkedPairs.length; i++) {
+    //         if( !(unmarkedPairs[i].every(s => this.finalStates.includes(s))) ) {
+    //             if(unmarkedPairs[i].some(s => this.finalStates.includes(s))) {
+    //                 markedPairs.push(unmarkedPairs[i]);
+    //             } else {
+    //                 tempUnmarked.push(unmarkedPairs[i]);
+    //             }
+    //         } else {
+    //             tempUnmarked.push(unmarkedPairs[i]);
+    //         }
+    //     }
+
+    //     console.log("marked pairs length: " + markedPairs.length);
+    //     console.log("unmarked pairs length: " + unmarkedPairs.length);
+    //     console.log("temp pairs length: " + tempUnmarked.length);
+
+    //     unmarkedPairs = tempUnmarked;   // new Unmarked Pairs
+
+    //     let keepMarking = true;
+    //     while(keepMarking) {
+    //         for(let i = 0; i < this.alphabet.length; i++) {
+    //             let char = this.alphabet[i];
+    //             let pairTransition = [];
+
+    //             for(let j = 0; j < unmarkedPairs.length; j++) {
+    //                 unmarkedPairs[j].forEach(state => {
+    //                     pairTransition.push(state.transitionFrom(char)[0]);
+    //                 })
+    //             }
+
+    //             pairTransition.forEach(state => {
+                    
+    //             })
+
+                
+    //         }
+
+    //         keepMarking = false;
+            
+    //     }
+
+    // }
+
+    // minimize by indexing
     minimizeDFA() {
         if(this.type == undefined) this.determineType();
 
@@ -298,7 +389,6 @@ class FA {
         let allStatesReached = false;
         while(!allStatesReached) {
             allStatesReached = true;
-
             for(let i = 0; i < this.alphabet.length; i++) {
                 let char = this.alphabet[i];
                 accessibleStates.forEach(state => {
@@ -311,39 +401,69 @@ class FA {
         }
         accessibleStates.forEach(state => console.log(this.states.indexOf(state)))
 
-        let unmarkedPairs = [];
-        let markedPairs = [];
+        let accessibleIndex = []
+        let finalStateIndex = []
 
-        for(let i = 0; i < accessibleStates.length - 1; i++) {
-            for(let j = i + 1; j < accessibleStates.length; j++) {
-                if( i == j) continue; 
+        accessibleStates.forEach(state => accessibleIndex.push(this.states.indexOf(state)));
+        this.finalStates.forEach(state => finalStateIndex.push(this.states.indexOf(state)));
 
-                console.log('i: ' + i + " j: " + j);
+        console.log(accessibleIndex)
+        console.log(finalStateIndex)
 
-                let s1 = accessibleStates[i];
-                let s2 = accessibleStates[j];
 
-                let pair = [s1, s2];
-                unmarkedPairs.push(pair);
+        let StatePairs = [];
+
+        for(let i = 0; i < this.states.length; i++) {
+            let pair = [];
+
+            for(let j = 0; j < this.states.length; j++) {
+                console.log('i: ' + i + " j: " + j);    
+                pair.push(false);
+            }
+
+            StatePairs.push(pair)
+        }
+
+        console.log("unmarked pairs : " );
+        console.log(StatePairs)
+        console.log("unmarked pairs length: " + StatePairs.length);
+
+        // First iteration: mark every pair with a final state
+        for(let i = 0; i < StatePairs.length; i++) {
+            for(let j = i + 1; j < StatePairs[i].length; j++) {
+                if(i == j) continue;
+                if(finalStateIndex.includes(i) && finalStateIndex.includes(j)) continue;
+                if(finalStateIndex.includes(i) || finalStateIndex.includes(j)) StatePairs[i][j] = true;
+            }
+        }
+        console.log(StatePairs)
+
+        for(let cIndex = 0; cIndex < this.alphabet.length; cIndex++) {
+            let char = this.alphabet[cIndex];
+            
+            for(let i = 0; i < StatePairs.length; i++) {
+
+                for(let j = i + 1; j < StatePairs[i].length; j++) {
+                    if(!StatePairs[i][j]) {
+                        let s1 = this.states[i].transitionFrom(char)[0];
+                        let s2 = this.states[j].transitionFrom(char)[0];
+                        
+                        let i1 = this.states.indexOf(s1);
+                        let i2 = this.states.indexOf(s2);
+
+                        console.log(StatePairs[i1][i2])
+
+                        if(StatePairs[i1][i2]) {
+                            StatePairs[i][j] = true;
+                        }
+
+                        
+                    }
+                }
             }
         }
 
-        console.log("unmarked pairs length: " + unmarkedPairs.length);
-
-        // First iteration: marking every pair with final states
-        unmarkedPairs.forEach(pair => {
-            if( !(pair.every(s => this.finalStates.includes(s))) ) {
-                if(pair.some(s => this.finalStates.includes(s))) markedPairs.push(pair)
-            }
-        })
-
-        console.log("marked pairs length: " + markedPairs.length);
-
-
-
-        // for(let i = 0; i < unmarkedPairs.length; i++) {
-
-        // }
+        console.log(StatePairs)
 
     }
  
@@ -720,7 +840,6 @@ class State {
 // Chapter 5 Homework Minimize DFA 2
 let f11 = new FA();
 f11.alphabet = ["0", "1"]
-f11.makeFinalState()
 
 for(let i = 0; i < 6; i++) f11.createState();
 f11.makeFinalState(f11.states[2]);
@@ -747,6 +866,7 @@ f11.createTransition(5, 5, "1");
 f11.getType();
 
 f11.minimizeDFA();
+
 
 
 
