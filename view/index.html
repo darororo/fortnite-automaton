@@ -1,59 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Finite Automaton</title>
-        <link rel="stylesheet" href="style.css">
-    </head>
-    <body>
-        <main>
-            <!--left content-->
-            <aside>
-                <h1>Automata</h1>
-                <div class="fa_type">
-                    <h3>FA Type:</h3>
-                    <div class="fa">
-                        <span>NFA</span>
-                        <span>DFA</span>
-                    </div>
-                </div>
-                <div class="asideBTN">
-                    <button id="testfa">Test FA</button>
-                    <button id="minimize">Minimize DFA</button>
-                    <button id="teststr" class="stringBTN">Test String</button>
-                </div>
-            </aside>
-
-            <!--right content-->
-            <div class="Rholder"> 
-                
-                <!--Top button-->
-                <div class="topBTN">
-                    <button style="background-color: yellowgreen;">Save</button>
-                    <button style="background-color: orange;">Load</button>
-                    <button style="background-color: crimson;">Reset</button>
-                </div>  
-
-                <!--Canvas to draw our elements-->
-                <canvas></canvas>
-
-                <!--Bottom Section-->
-                <div class="bottom">
-                    <div class="accept">
-                        <span class="acc">Accept</span>
-                    </div>
-                    
-                    <div class="reject">
-                        <span class="rej">Reject</span>
-                    </div>
-                    
-                    <div class="result">
-                        <span class="res">Result</span>
-                    </div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finite Automaton</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main>
+        <!--left content-->
+        <aside>
+            <h1>Automata</h1>
+            <div class="fa_type">
+                <h3>FA Type:</h3>
+                <div class="fa">
+                    <span>NFA</span>
+                    <span>DFA</span>
                 </div>
             </div>
-        </main>
-        <script src="script.js"></script>
-    </body>
+            <div class="asideBTN">
+                <button id="testfa">Test FA</button>
+                <button id="minimize">Minimize DFA</button>
+                <label id="labelText" for="">Test / Debug:</label>
+                <input id="textInput" type="text">
+                <button id="teststr" class="stringBTN">Test String</button>
+            </div>
+        </aside>
+
+        <!--right content-->
+        <div class="Rholder">
+            <!--Top button-->
+            <div class="topBTN">
+                <button style="background-color: yellowgreen;">Save</button>
+                <button style="background-color: orange;">Load</button>
+                <button style="background-color: crimson;">Reset</button>
+            </div>
+
+            <!--Canvas to draw our elements-->
+            <canvas></canvas>
+
+            <!--Bottom Section-->
+            <div class="bottom">
+                <div class="accept">
+                    <span class="acc">Accept</span>
+                </div>
+                <div class="reject">
+                    <span class="rej">Reject</span>
+                </div>
+                <div class="result">
+                    <span class="res">Result</span>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="script.js"></script>
+</body>
 </html>
