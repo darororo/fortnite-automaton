@@ -104,6 +104,7 @@ aside h3{
     padding: 1rem;
     background-color: #f0f0f0;
     border-bottom: 1px solid black;
+    width: auto;
 }
 
 .topBTN button{
@@ -113,17 +114,18 @@ aside h3{
     background-color: #e0e0e0;
 }
 
-canvas{
+#canvasParent{
     flex: 1;
-    border: 1px solid black;
-    margin: 1rem;
+    width: auto;
+    height: 33rem;
 }
 
 .bottom{
     display: flex;
     flex-wrap: wrap;
     border-top: 1px solid black;
-    width: 100%;
+    width: auto;
+    height: 15rem;
 }
 
 .bottom div{
@@ -132,6 +134,7 @@ canvas{
     height: 7rem;
     border: 1px solid black;
     box-sizing: border-box;
+    height: auto;
 }
 
 .bottom span{

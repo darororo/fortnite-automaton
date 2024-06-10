@@ -31,13 +31,13 @@
         <div class="Rholder">
             <!--Top button-->
             <div class="topBTN">
-                <button style="background-color: yellowgreen;">Save</button>
-                <button style="background-color: orange;">Load</button>
-                <button style="background-color: crimson;">Reset</button>
+                <button id="save" style="background-color: yellowgreen;">Save</button>
+                <button id ="load" style="background-color: orange;">Load</button>
+                <button id="reset" style="background-color: crimson;">Reset</button>
             </div>
 
             <!--Canvas to draw our elements-->
-            <canvas></canvas>
+            <div id="canvasParent"></div>
 
             <!--Bottom Section-->
             <div class="bottom">
@@ -53,6 +53,7 @@
             </div>
         </div>
     </main>
+    <script src="libs/p5.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
