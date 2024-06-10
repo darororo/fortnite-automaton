@@ -13,6 +13,7 @@ class FA {
     createState() {
         let s = new State();
         this.states.push(s);
+        console.log("state created");
     }
 
     createTransition(fromStateIndex, destStateIndex, char) {
@@ -796,86 +797,86 @@ class State {
 
 
 // Chapter 5 Homework Minimize DFA 1
-let f10 = new FA();
-f10.alphabet = ["a", "b"];
+// let f10 = new FA();
+// f10.alphabet = ["a", "b"];
 
-for(let i = 0; i < 5; i++) f10.createState();
-f10.makeFinalState(f10.states[1]);
-f10.makeFinalState(f10.states[3]);
+// for(let i = 0; i < 5; i++) f10.createState();
+// f10.makeFinalState(f10.states[1]);
+// f10.makeFinalState(f10.states[3]);
 
-f10.createTransition(0, 1, "a");
-f10.createTransition(0, 1, "b");
+// f10.createTransition(0, 1, "a");
+// f10.createTransition(0, 1, "b");
 
-f10.createTransition(1, 2, "a");
-f10.createTransition(1, 2, "b");
+// f10.createTransition(1, 2, "a");
+// f10.createTransition(1, 2, "b");
 
-f10.createTransition(2, 3, "a");
-f10.createTransition(2, 3, "b");
+// f10.createTransition(2, 3, "a");
+// f10.createTransition(2, 3, "b");
 
-f10.createTransition(3, 2, "a");
-f10.createTransition(3, 2, "b");
+// f10.createTransition(3, 2, "a");
+// f10.createTransition(3, 2, "b");
 
-f10.createTransition(4, 3, "a");
-f10.createTransition(4, 2, "b");
+// f10.createTransition(4, 3, "a");
+// f10.createTransition(4, 2, "b");
 
-f10.getType();
+// f10.getType();
 
-f10.checkStr("a");
-f10.checkStr("ab");
-f10.checkStr("aba");
-f10.checkStr("aaa")
+// f10.checkStr("a");
+// f10.checkStr("ab");
+// f10.checkStr("aba");
+// f10.checkStr("aaa")
 
-let f10Min = f10.getMinimizedDFA();
-f10Min.getType();
+// let f10Min = f10.getMinimizedDFA();
+// f10Min.getType();
 
-f10Min.checkStr("a");
-f10Min.checkStr("ab");
-f10Min.checkStr("aba");
-f10Min.checkStr("aaa")
-
-
-// Chapter 5 Homework Minimize DFA 2
-let f11 = new FA();
-f11.alphabet = ["0", "1"]
-
-for(let i = 0; i < 6; i++) f11.createState();
-f11.makeFinalState(f11.states[2]);
-f11.makeFinalState(f11.states[3]);
-
-f11.createTransition(0, 1, "0");
-f11.createTransition(0, 2, "1");
-
-f11.createTransition(1, 0, "0");
-f11.createTransition(1, 3, "1");
-
-f11.createTransition(2, 4, "0");
-f11.createTransition(2, 5, "1");
-
-f11.createTransition(3, 4, "0");
-f11.createTransition(3, 5, "1");
-
-f11.createTransition(4, 4, "0");
-f11.createTransition(4, 5, "1");
-
-f11.createTransition(5, 5, "0");
-f11.createTransition(5, 5, "1");
-
-f11.getType();
-
-f11.checkStr("1");      // FUCK YEAH
-f11.checkStr("01");     // FUCK YEAH
-f11.checkStr("0001");   // FUCK YEAH
-f11.checkStr("011");    // FUCK NO
-f11.checkStr("010");    // FUCK NO
+// f10Min.checkStr("a");
+// f10Min.checkStr("ab");
+// f10Min.checkStr("aba");
+// f10Min.checkStr("aaa")
 
 
-let f11Min = f11.getMinimizedDFA();
-f11.getType()
+// // Chapter 5 Homework Minimize DFA 2
+// let f11 = new FA();
+// f11.alphabet = ["0", "1"]
 
-f11Min.checkStr("1");      // FUCK YEAH
-f11Min.checkStr("01");     // FUCK YEAH
-f11Min.checkStr("0001");   // FUCK YEAH
-f11Min.checkStr("011");    // FUCK NO
-f11Min.checkStr("010");    // FUCK NO
+// for(let i = 0; i < 6; i++) f11.createState();
+// f11.makeFinalState(f11.states[2]);
+// f11.makeFinalState(f11.states[3]);
+
+// f11.createTransition(0, 1, "0");
+// f11.createTransition(0, 2, "1");
+
+// f11.createTransition(1, 0, "0");
+// f11.createTransition(1, 3, "1");
+
+// f11.createTransition(2, 4, "0");
+// f11.createTransition(2, 5, "1");
+
+// f11.createTransition(3, 4, "0");
+// f11.createTransition(3, 5, "1");
+
+// f11.createTransition(4, 4, "0");
+// f11.createTransition(4, 5, "1");
+
+// f11.createTransition(5, 5, "0");
+// f11.createTransition(5, 5, "1");
+
+// f11.getType();
+
+// f11.checkStr("1");      // FUCK YEAH
+// f11.checkStr("01");     // FUCK YEAH
+// f11.checkStr("0001");   // FUCK YEAH
+// f11.checkStr("011");    // FUCK NO
+// f11.checkStr("010");    // FUCK NO
+
+
+// let f11Min = f11.getMinimizedDFA();
+// f11.getType()
+
+// f11Min.checkStr("1");      // FUCK YEAH
+// f11Min.checkStr("01");     // FUCK YEAH
+// f11Min.checkStr("0001");   // FUCK YEAH
+// f11Min.checkStr("011");    // FUCK NO
+// f11Min.checkStr("010");    // FUCK NO
 
 
