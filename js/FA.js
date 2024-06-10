@@ -128,7 +128,6 @@ class FA {
 
     }
 
-    // Not yet supported epsilon transition 
     checkStrNFA(str) {
         let currentStates = [this.states[0]];
 
@@ -255,7 +254,7 @@ class FA {
                     let qiFound = false;
                     let qiIndex;    // index of qi in the supersets; also the index of a new DFA state 
 
-                    for(let i = 0; i < dfaSets.length; i++) {   // Refactor: Might be able to put in the above loop
+                    for(let i = 0; i < dfaSets.length; i++) {   // Refactor: Might be able to put in the above loop or use indexing instead
                         if(qi.length == 0) {
                             if(dfaSets[i].length == qi.length) qiFound = true;
                         } else if(dfaSets[i].length == qi.length) {
@@ -289,14 +288,169 @@ class FA {
         }
     }
 
-    minimizeDFA() {
+    getMinimizedDFA() {
+        if(this.type == undefined) this.determineType();
+
         if(this.type == TypeFA.NFA) return;
 
-        let accessibleStates = [];
+        let accessibleStates = [this.states[0]];
+
+        let allStatesReached = false;
+        while(!allStatesReached) {
+            allStatesReached = true;
+            for(let i = 0; i < this.alphabet.length; i++) {
+                let char = this.alphabet[i];
+                accessibleStates.forEach(state => {
+                    if( !(accessibleStates.includes(state.transitionFrom(char)[0])) ) {
+                        accessibleStates.push(state.transitionFrom(char)[0]);
+                        allStatesReached = false;
+                    }
+               })
+            }
+        }
+
+        let accessibleIndex = []
+        let finalStateIndex = []
+
+        accessibleStates.forEach(state => accessibleIndex.push(this.states.indexOf(state)));
+        this.finalStates.forEach(state => finalStateIndex.push(this.states.indexOf(state)));
+
+        let StatePairs = [];
 
 
+        // Initialize Table for the table filling method
+        // Unmarked: False; Marked: True
+        for(let i = 0; i < this.states.length; i++) {
+            let pair = [];
+
+            for(let j = 0; j < this.states.length; j++) {
+                pair.push(false);
+            }
+
+            StatePairs.push(pair)
+        }
+
+        // First iteration: mark every pair with a final state; don't mark pairs with 2 final states
+        for(let i = 0; i < StatePairs.length; i++) {
+            for(let j = i + 1; j < StatePairs[i].length; j++) {
+                if(!accessibleIndex.includes(i) || !accessibleIndex.includes(j)) continue;
+
+                if(i == j) continue;
+
+                if(finalStateIndex.includes(i) && finalStateIndex.includes(j)) continue;
+                if(finalStateIndex.includes(i) || finalStateIndex.includes(j)) StatePairs[i][j] = true;
+            }
+        }
 
 
+        // Next iterations; check every unmarked pairs
+        for(let cIndex = 0; cIndex < this.alphabet.length; cIndex++) {
+            let char = this.alphabet[cIndex];
+            
+            for(let i = 0; i < StatePairs.length; i++) {
+                if(!accessibleIndex.includes(i)) continue;
+
+                for(let j = i + 1; j < StatePairs[i].length; j++) {
+                    if(!accessibleIndex.includes(j)) continue;
+
+                    if(!StatePairs[i][j]) {
+                        let s1 = this.states[i].transitionFrom(char)[0];
+                        let s2 = this.states[j].transitionFrom(char)[0];
+                        
+                        // index of the pair recieved from the transition of an unmarked pair
+                        let i1 = this.states.indexOf(s1);
+                        let i2 = this.states.indexOf(s2);
+
+                        if(StatePairs[i1][i2]) {
+                            // if the transition of a pair gives a marked pair
+                            // Mark the pair that perform the transition
+                            StatePairs[i][j] = true;
+                        }
+                    }
+                }
+            }
+        }
+
+
+        let minimizedDFA = new FA();
+        let minStates = [];
+        minimizedDFA.alphabet = this.alphabet;
+
+        for(let i = 0; i < StatePairs.length; i++) {
+            if(!accessibleIndex.includes(i)) continue;
+
+            let stateExisted = false;   // if the current state already exists in a previous state group
+            minStates.forEach(states => {
+                if(states.includes(i)) {
+                    stateExisted = true
+                } 
+            })
+            
+            if(stateExisted) continue;
+
+            let group = [i];
+    
+            for(let j = i + 1; j < StatePairs[i].length; j++) {
+                // check the states along the i-th column
+
+                if(!accessibleIndex.includes(j)) continue;
+
+                if(!StatePairs[i][j]) {
+                    group.push(j); // if a pair is unmarked; add it to the current state group
+
+                    for(let k = i + 1; k < j; k++) {
+                        // check the states along the j-th row
+
+                        if(!accessibleIndex.includes(k)) continue;
+
+                        if(!StatePairs[k][j]) {
+                            group.push(k); // if a pair is unmarked; add it to the current state group
+                        }
+                    }
+                }
+            }
+
+            minStates.push(group)
+        }
+
+
+        // Create states for the minimized DFA
+        for(let i = 0; i < minStates.length; i++) {
+            minimizedDFA.createState();
+            finalStateIndex.forEach(index => {
+                if(minStates[i].includes(index)) {
+                    minimizedDFA.makeFinalState(minimizedDFA.states[i]);
+                }   
+            })
+        }
+
+        // Create transitions for each state of the minimized DFA
+        for(let i = 0; i < accessibleIndex.length; i++) {
+            let stateIndex = accessibleIndex[i];
+
+            for(let cIndex = 0; cIndex < this.alphabet.length; cIndex++) {
+                let char = this.alphabet[cIndex];
+
+                let trans = this.states[stateIndex].transitionFrom(char)[0];
+                let transIndex = this.states.indexOf(trans);
+
+                let minIndex; let minTransIndex;
+
+                for(let k = 0; k < minStates.length; k++) {
+                    if(minStates[k].includes(stateIndex)){
+                        minIndex = k;
+                    }
+                     
+                    if(minStates[k].includes(transIndex)){
+                        minTransIndex = k;
+                    }
+                }
+
+                minimizedDFA.createTransition(minIndex, minTransIndex, char);
+            }
+        }
+        
+        return minimizedDFA;
     }
  
 }
@@ -355,26 +509,6 @@ class State {
         }
         return currentStates;
     }
-
-    // Epsilon closure of all states yielded from 
-    // the transition on a character of this state ; including this state
-    // EClosureTransitionFrom(char) {
-    //     let states = this.epsilonClosure();
-
-    //     this.epsilonClosure().forEach(state => {
-    //         state.transitionFrom(char).forEach(s => {
-    //             if(!(states.includes(s))) states.push(s);
-    //         })
-    //     })
-
-    //     states.forEach(state => {
-    //         state.epsilonClosure().forEach(s => {
-    //             if(!(states.includes(s))) states.push(s);
-    //         })
-    //     })
-
-    //     return states;
-    // }
 
 }
 
@@ -622,38 +756,126 @@ class State {
 
 // Chapter 5 homework NFA To DFA 3
 
-let f9 = new FA();
-f9.alphabet = ["a", "b"];
+// let f9 = new FA();
+// f9.alphabet = ["a", "b"];
 
-for(let i = 0; i < 6; i++) f9.createState();
+// for(let i = 0; i < 6; i++) f9.createState();
 
-f9.makeFinalState(f9.states[3]);
+// f9.makeFinalState(f9.states[3]);
 
-// f9.states[0].createTransition("b", f9.states[1]);
+// // f9.states[0].createTransition("b", f9.states[1]);
 
-f9.createTransition(0, 1, "b"); // new wrapper function
+// f9.createTransition(0, 1, "b"); // new wrapper function
 
-f9.createTransition(1, 2, "a"); 
-f9.createTransition(1, 5, "b"); 
-f9.createTransition(1, 2, ""); 
+// f9.createTransition(1, 2, "a"); 
+// f9.createTransition(1, 5, "b"); 
+// f9.createTransition(1, 2, ""); 
 
-f9.createTransition(2, 1, "b"); 
-f9.createTransition(2, 3, "b"); 
+// f9.createTransition(2, 1, "b"); 
+// f9.createTransition(2, 3, "b"); 
 
-f9.createTransition(3, 4, "a"); 
+// f9.createTransition(3, 4, "a"); 
 
-f9.createTransition(4, 3, ""); 
-f9.createTransition(4, 2, "b"); 
-f9.createTransition(4, 5, "a"); 
+// f9.createTransition(4, 3, ""); 
+// f9.createTransition(4, 2, "b"); 
+// f9.createTransition(4, 5, "a"); 
 
-f9.createTransition(5, 2, ""); 
-f9.createTransition(5, 3, "a"); 
+// f9.createTransition(5, 2, ""); 
+// f9.createTransition(5, 3, "a"); 
 
 
-console.log(f9);
+// console.log(f9);
 
-let f9DFA = f9.getNFAtoDFA();   // 8 states, 4 final states; like in the homework
+// let f9DFA = f9.getNFAtoDFA();   // 8 states, 4 final states; like in the homework
 
-console.log(f9DFA)
+// console.log(f9DFA)
 
-console.log(f9.type);
+// console.log(f9.type);
+
+// DFA minimization TEST
+
+
+// Chapter 5 Homework Minimize DFA 1
+let f10 = new FA();
+f10.alphabet = ["a", "b"];
+
+for(let i = 0; i < 5; i++) f10.createState();
+f10.makeFinalState(f10.states[1]);
+f10.makeFinalState(f10.states[3]);
+
+f10.createTransition(0, 1, "a");
+f10.createTransition(0, 1, "b");
+
+f10.createTransition(1, 2, "a");
+f10.createTransition(1, 2, "b");
+
+f10.createTransition(2, 3, "a");
+f10.createTransition(2, 3, "b");
+
+f10.createTransition(3, 2, "a");
+f10.createTransition(3, 2, "b");
+
+f10.createTransition(4, 3, "a");
+f10.createTransition(4, 2, "b");
+
+f10.getType();
+
+f10.checkStr("a");
+f10.checkStr("ab");
+f10.checkStr("aba");
+f10.checkStr("aaa")
+
+let f10Min = f10.getMinimizedDFA();
+f10Min.getType();
+
+f10Min.checkStr("a");
+f10Min.checkStr("ab");
+f10Min.checkStr("aba");
+f10Min.checkStr("aaa")
+
+
+// Chapter 5 Homework Minimize DFA 2
+let f11 = new FA();
+f11.alphabet = ["0", "1"]
+
+for(let i = 0; i < 6; i++) f11.createState();
+f11.makeFinalState(f11.states[2]);
+f11.makeFinalState(f11.states[3]);
+
+f11.createTransition(0, 1, "0");
+f11.createTransition(0, 2, "1");
+
+f11.createTransition(1, 0, "0");
+f11.createTransition(1, 3, "1");
+
+f11.createTransition(2, 4, "0");
+f11.createTransition(2, 5, "1");
+
+f11.createTransition(3, 4, "0");
+f11.createTransition(3, 5, "1");
+
+f11.createTransition(4, 4, "0");
+f11.createTransition(4, 5, "1");
+
+f11.createTransition(5, 5, "0");
+f11.createTransition(5, 5, "1");
+
+f11.getType();
+
+f11.checkStr("1");      // FUCK YEAH
+f11.checkStr("01");     // FUCK YEAH
+f11.checkStr("0001");   // FUCK YEAH
+f11.checkStr("011");    // FUCK NO
+f11.checkStr("010");    // FUCK NO
+
+
+let f11Min = f11.getMinimizedDFA();
+f11.getType()
+
+f11Min.checkStr("1");      // FUCK YEAH
+f11Min.checkStr("01");     // FUCK YEAH
+f11Min.checkStr("0001");   // FUCK YEAH
+f11Min.checkStr("011");    // FUCK NO
+f11Min.checkStr("010");    // FUCK NO
+
+
