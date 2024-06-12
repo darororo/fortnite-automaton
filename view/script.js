@@ -10,13 +10,16 @@ resetbutton.addEventListener("click", function () {
   lines = [];
 });
 
-//Set up canvas using p5js
+// Set up canvas using p5js
 function setup() {
   // Get the parent container element
   canvasParent = document.getElementById("canvasParent");
 
   // Set initial canvas size based on div parent container
-  const mycanvas = createCanvas(canvasParent.offsetWidth, canvasParent.offsetHeight);
+  const mycanvas = createCanvas(
+    canvasParent.offsetWidth,
+    canvasParent.offsetHeight
+  );
   mycanvas.parent("canvasParent");
 
   windowResized();
@@ -40,7 +43,7 @@ class Draggable {
     this.dragging = false; // Is the object being dragged?
     this.rollover = false; // Is the mouse over the ellipse?
 
-    //Set initial position
+    // Set initial position
     this.x = posX;
     this.y = posY;
 
@@ -48,7 +51,7 @@ class Draggable {
     this.w = 125;
     this.h = 50;
 
-    //Add small box inside the rectangle as an anchor for line
+    // Add small box inside the rectangle as an anchor for line
     this.smallBoxSize = 20;
     this.smallBoxX = this.x + this.w - this.smallBoxSize - 10;
     this.smallBoxY = this.y + (this.h - this.smallBoxSize) / 2;
@@ -69,14 +72,19 @@ class Draggable {
     boxCounter++; // Increment box counter for the next box
   }
 
-  //create state based on FA.js algo
+  // Create state based on FA.js algo
   createState() {
     this.state = fa.createState();
   }
 
   over() {
-    // detect if mouse is within the state postion
-    if (mouseX > this.x && mouseX < this.x + this.w && mouseY > this.y && mouseY < this.y + this.h) {
+    // detect if mouse is within the state position
+    if (
+      mouseX > this.x &&
+      mouseX < this.x + this.w &&
+      mouseY > this.y &&
+      mouseY < this.y + this.h
+    ) {
       this.rollover = true;
     } else {
       this.rollover = false;
@@ -126,17 +134,34 @@ class Draggable {
 
     // Draw small box
     fill(0, 0, 0);
-    rect(this.smallBoxX, this.smallBoxY, this.smallBoxSize, this.smallBoxSize, 5);
+    rect(
+      this.smallBoxX,
+      this.smallBoxY,
+      this.smallBoxSize,
+      this.smallBoxSize,
+      5
+    );
   }
 
   pressed() {
     // Check if mouse is within the small box position
-    if (mouseX > this.smallBoxX && mouseX < this.smallBoxX + this.smallBoxSize && mouseY > this.smallBoxY && mouseY < this.smallBoxY + this.smallBoxSize) {
+    if (
+      mouseX > this.smallBoxX &&
+      mouseX < this.smallBoxX + this.smallBoxSize &&
+      mouseY > this.smallBoxY &&
+      mouseY < this.smallBoxY + this.smallBoxSize
+    ) {
       console.log("small box clicked");
       startLine(this);
-    } else if ( mouseX > this.x && mouseX < this.x + this.w && mouseY > this.y && mouseY < this.y + this.h) { //Check if the mouse is within the state position
+    } else if (
+      mouseX > this.x &&
+      mouseX < this.x + this.w &&
+      mouseY > this.y &&
+      mouseY < this.y + this.h
+    ) {
+      // Check if the mouse is within the state position
       this.dragging = true;
-      
+
       // Store initial mouse position and object position
       this.initialMouseX = mouseX;
       this.initialMouseY = mouseY;
@@ -190,7 +215,13 @@ function mouseReleased() {
 
 // Handle double-clicked event
 function doubleClicked() {
-  if (mouseX >= 0 && mouseX <= canvasParent.offsetWidth && mouseY >= 0 && mouseY <= canvasParent.offsetHeight) { //check if the mouse position is within the canvas width and height
+  if (
+    mouseX >= 0 &&
+    mouseX <= canvasParent.offsetWidth &&
+    mouseY >= 0 &&
+    mouseY <= canvasParent.offsetHeight
+  ) {
+    // Check if the mouse position is within the canvas width and height
     let box = new Draggable(mouseX, mouseY);
     boxList.push(box);
     box.pressed(); // Allow dragging immediately after creation
@@ -203,12 +234,14 @@ function doubleClicked() {
   }
 }
 
-//handling line
+// Handling line
 class Line {
   constructor(startBox) {
     this.startBox = startBox;
     this.endBox = null;
-    this.controlOffset = 50;
+    this.controlOffset = 150;
+    this.label = ""; // Initialize label
+
     // Initialize starting coordinates based on the current position of startBox
     this.updateStartCoordinates();
     startBox.lines.push(this);
@@ -236,6 +269,13 @@ class Line {
     this.endX = endBox.smallBoxX + endBox.smallBoxSize / 2;
     this.endY = endBox.smallBoxY + endBox.smallBoxSize / 2;
     endBox.lines.push(this);
+
+    // Open the new frame for the user to enter the label
+    openNewFrame(this);
+  }
+
+  setLabel(label) {
+    this.label = label;
   }
 
   show() {
@@ -255,15 +295,27 @@ class Line {
     endShape();
 
     // Draw arrowhead
-   let angle = atan2(this.endY - this.startY, this.endX - this.startX);
-   let arrowSize = 15; 
-   let x1 = this.endX - arrowSize * cos(angle - QUARTER_PI);
-   let y1 = this.endY - arrowSize * sin(angle - QUARTER_PI);
-   let x2 = this.endX - arrowSize * cos(angle + QUARTER_PI);
-   let y2 = this.endY - arrowSize * sin(angle + QUARTER_PI);
+    let angle = atan2(this.endY - this.startY, this.endX - this.startX);
+    let arrowSize = 15;
+    let x1 = this.endX - arrowSize * cos(angle - QUARTER_PI);
+    let y1 = this.endY - arrowSize * sin(angle - QUARTER_PI);
+    let x2 = this.endX - arrowSize * cos(angle + QUARTER_PI);
+    let y2 = this.endY - arrowSize * sin(angle + QUARTER_PI);
 
-   fill(255, 0, 0); // Set triangle color
-   triangle(this.endX, this.endY, x1, y1, x2, y2);
+    fill(255, 0, 0); // Set triangle color
+    triangle(this.endX, this.endY, x1, y1, x2, y2);
+
+    // Display the label
+    if (this.label) {
+      noStroke();
+      fill(0);
+      textAlign(CENTER, CENTER);
+      text(
+        this.label,
+        (this.startX + this.endX) / 2,
+        (this.startY + this.endY) / 2 - 10
+      );
+    }
   }
 }
 
@@ -286,4 +338,52 @@ function completeLine() {
     }
   }
   currentLine = null; // Discard the line if not completed
+}
+
+function openNewFrame(line) {
+  // Create a new frame
+  let frame = document.createElement("div");
+  frame.style.position = "fixed";
+  frame.style.left = "50%";
+  frame.style.top = "50%";
+  frame.style.transform = "translate(-50%, -50%)";
+  frame.style.width = "400px";
+  frame.style.height = "300px";
+  frame.style.backgroundColor = "white";
+  frame.style.border = "2px solid black";
+  frame.style.zIndex = "1000";
+  frame.style.padding = "20px";
+  frame.style.boxShadow = "0 0 10px rgba(0, 0, 0, 0.5)";
+
+  // Add content to the frame
+  frame.innerHTML = `
+    <h2>Label Your Transition</h2>
+    <span>Transition: </span>
+    <input type = "text" id = "transitName">
+    <br></br>
+  `;
+
+  // Add a save button
+let saveButton = document.createElement("button");
+saveButton.innerText = "Save";
+saveButton.onclick = () => {
+  const inputValue = document.getElementById("transitName").value.toUpperCase();
+  line.setLabel(inputValue);
+  document.body.removeChild(frame);
+
+  console.log(line.label);
+};
+frame.appendChild(saveButton);
+
+  // Add a close button
+  let closeButton = document.createElement("button");
+  closeButton.innerText = "Close";
+  closeButton.style.marginLeft = "10px";
+  closeButton.onclick = () => {
+    document.body.removeChild(frame);
+  };
+  frame.appendChild(closeButton);
+
+  // Append the frame to the body
+  document.body.appendChild(frame);
 }
