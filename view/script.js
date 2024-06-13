@@ -68,7 +68,7 @@ class Draggable {
     this.initialY = 0;
 
     // Assign label based on box counter
-    this.label = "S - " + boxCounter;
+    this.label = "S " + boxCounter;
     boxCounter++; // Increment box counter for the next box
   }
 
@@ -248,14 +248,61 @@ class Line {
   }
 
   updateStartCoordinates() {
-    this.startX = this.startBox.smallBoxX + this.startBox.smallBoxSize / 2;
-    this.startY = this.startBox.smallBoxY + this.startBox.smallBoxSize / 2;
+
+    if(this.endBox) {
+      let aboveEndbox = this.startBox.y + this.startBox.h < this.endBox.y;
+      let underEndbox = this.startBox.y + this.startBox.h > this.endBox.y;
+      let rightOfEndbox = this.startBox.x > this.endBox.x + this.endBox.w;
+      let leftOfEndbox = this.startBox.x + this.startBox.w < this.endBox.x;
+
+      if(aboveEndbox) {
+        this.startX = this.startBox.x + this.startBox.w / 2;
+        this.startY = this.startBox.y + this.startBox.h;
+      } else if(underEndbox && rightOfEndbox) {
+        this.startX = this.startBox.x;
+        this.startY = this.startBox.y + this.startBox.h / 2;
+      } else if(underEndbox && leftOfEndbox) {
+        this.startX = this.startBox.x + this.startBox.w;
+        this.startY = this.startBox.y + this.startBox.h / 2;
+      } else if(underEndbox) {
+        this.startX = this.startBox.x + this.startBox.w/2;
+        this.startY = this.startBox.y;
+      }
+
+    } else {
+      this.startX = this.startBox.smallBoxX + this.startBox.smallBoxSize / 2;
+      this.startY = this.startBox.smallBoxY + this.startBox.smallBoxSize / 2;
+    }
+
   }
 
   update(x, y) {
-    if (this.endBox) {
-      this.endX = this.endBox.smallBoxX + this.endBox.smallBoxSize / 2;
-      this.endY = this.endBox.smallBoxY + this.endBox.smallBoxSize / 2;
+
+    if(this.endBox) {
+      let aboveEndbox = this.startBox.y + this.startBox.h < this.endBox.y;
+      let underEndbox = this.startBox.y + this.startBox.h > this.endBox.y;
+      let rightOfEndbox = this.startBox.x > this.endBox.x + this.endBox.w;
+      let leftOfEndbox = this.startBox.x + this.startBox.w < this.endBox.x;
+
+      if(aboveEndbox) {
+        this.endX = this.endBox.x + this.endBox.w/2;
+        this.endY = this.endBox.y;
+      } else if(rightOfEndbox && underEndbox) {
+        this.endX = this.endBox.x + this.endBox.w;
+        this.endY = this.endBox.y + this.endBox.h/2;
+      } else if(leftOfEndbox && underEndbox) {
+        this.endX = this.endBox.x;
+        this.endY = this.endBox.y + this.endBox.h/2;
+      } else if(underEndbox) {
+        this.endX = this.endBox.x + this.endBox.w/2;
+        this.endY = this.endBox.y + this.endBox.h;
+      }  
+
+
+      // this.endX = this.endBox.smallBoxX + this.endBox.smallBoxSize / 2;
+      // this.endY = this.endBox.smallBoxY + this.endBox.smallBoxSize / 2;
+      // this.endX = this.endBox.x;
+      // this.endY = this.endBox.y + this.endBox.h/2;
     } else {
       this.endX = x;
       this.endY = y;
@@ -266,8 +313,10 @@ class Line {
 
   complete(endBox) {
     this.endBox = endBox;
-    this.endX = endBox.smallBoxX + endBox.smallBoxSize / 2;
-    this.endY = endBox.smallBoxY + endBox.smallBoxSize / 2;
+    // this.endX = endBox.smallBoxX + endBox.smallBoxSize / 2;
+    // this.endY = endBox.smallBoxY + endBox.smallBoxSize / 2;
+    this.endX = endBox.x;
+    this.endY = endBox.y + endBox.h/2;
     endBox.lines.push(this);
 
     // Open the new frame for the user to enter the label
@@ -285,9 +334,11 @@ class Line {
     beginShape();
     vertex(this.startX, this.startY);
     bezierVertex(
-      this.startX + this.controlOffset,
+      // this.startX + this.controlOffset,
+      this.startX,
       this.startY,
-      this.endX - this.controlOffset,
+      // this.endX - this.controlOffset,
+      this.startX,
       this.endY,
       this.endX,
       this.endY
@@ -296,7 +347,7 @@ class Line {
 
     // Draw arrowhead
     let angle = atan2(this.endY - this.startY, this.endX - this.startX);
-    let arrowSize = 15;
+    let arrowSize = 10;
     let x1 = this.endX - arrowSize * cos(angle - QUARTER_PI);
     let y1 = this.endY - arrowSize * sin(angle - QUARTER_PI);
     let x2 = this.endX - arrowSize * cos(angle + QUARTER_PI);
@@ -324,13 +375,21 @@ function startLine(box) {
 }
 
 function completeLine() {
+  // let mouseOverSmallBox;
+  let mouseOverBox;
+
   for (let box of boxList) {
-    if (
-      mouseX > box.smallBoxX &&
-      mouseX < box.smallBoxX + box.smallBoxSize &&
-      mouseY > box.smallBoxY &&
-      mouseY < box.smallBoxY + box.smallBoxSize
-    ) {
+    // mouseOverSmallBox = mouseX > box.smallBoxX &&
+    //               mouseX < box.smallBoxX + box.smallBoxSize &&
+    //               mouseY > box.smallBoxY &&
+    //               mouseY < box.smallBoxY + box.smallBoxSize;
+
+    mouseOverBox = mouseX > box.x &&
+                  mouseX < box.x + box.w &&
+                  mouseY > box.h &&
+                  mouseY < box.y + box.h; 
+
+    if (mouseOverBox) {
       currentLine.complete(box);
       lines.push(currentLine);
       currentLine = null;
