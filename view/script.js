@@ -2,12 +2,14 @@ let canvasParent;
 const resetbutton = document.getElementById("reset");
 let boxCounter = 0;
 let fa = new FA();
+fa.alphabet = ["a", "b"];
 
 // Empty boxlist array if user clicks reset
 resetbutton.addEventListener("click", function () {
   boxList = [];
   boxCounter = 0;
   lines = [];
+  showFAType(); // reset color of type labels
   fa = new FA();
 });
 
@@ -462,3 +464,39 @@ function CreateLineTransition(line) {
   console.log("From ", fromIndex, " to ", destIndex, " on ", char);
   fa.createTransition(fromIndex, destIndex, char);
 }
+
+
+let getTypeBtn = document.getElementsByClassName("fa_type")[0];
+  getTypeBtn.onclick = () => {
+
+    if(fa.states.length == 0) {
+      alert("oh may gah")
+    } else {
+      fa.determineType();
+      showFAType();
+    }
+
+    
+  }
+
+function showFAType() {
+  let NFAEle = document.querySelectorAll('.fa span')[0];
+  let DFAEle = document.querySelectorAll('.fa span')[1];
+
+  // After Reset, set to default color 
+  if(boxCounter == 0) {
+    DFAEle.style.backgroundColor = "#9faec1";
+    NFAEle.style.backgroundColor = "#9faec1";
+    return;
+  }
+
+  if(fa.type == TypeFA.NFA) {
+    DFAEle.style.backgroundColor = "#9faec1";
+    NFAEle.style.backgroundColor = "Green";
+  } else {
+    DFAEle.style.backgroundColor = "Green";
+    NFAEle.style.backgroundColor = "#9faec1";
+  }
+  
+}
+
