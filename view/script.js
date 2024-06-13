@@ -11,6 +11,7 @@ resetbutton.addEventListener("click", function () {
   lines = [];
   showFAType(); // reset color of type labels
   fa = new FA();
+  fa.alphabet = ["a", "b"];
 });
 
 // Set up canvas using p5js
@@ -258,19 +259,26 @@ class Line {
       let rightOfEndbox = this.startBox.x > this.endBox.x + this.endBox.w;
       let leftOfEndbox = this.startBox.x + this.startBox.w < this.endBox.x;
 
-      if(aboveEndbox) {
-        this.startX = this.startBox.x + this.startBox.w / 2;
-        this.startY = this.startBox.y + this.startBox.h;
-      } else if(underEndbox && rightOfEndbox) {
-        this.startX = this.startBox.x;
-        this.startY = this.startBox.y + this.startBox.h / 2;
-      } else if(underEndbox && leftOfEndbox) {
-        this.startX = this.startBox.x + this.startBox.w;
-        this.startY = this.startBox.y + this.startBox.h / 2;
-      } else if(underEndbox) {
-        this.startX = this.startBox.x + this.startBox.w/2;
+      if(this.endBox == this.startBox) {  // Self transition
+        this.startX = this.startBox.x + this.startBox.w / 2 - 20;
         this.startY = this.startBox.y;
+      } else {
+        if(aboveEndbox) {
+          this.startX = this.startBox.x + this.startBox.w / 2;
+          this.startY = this.startBox.y + this.startBox.h;
+        } else if(underEndbox && rightOfEndbox) {
+          this.startX = this.startBox.x;
+          this.startY = this.startBox.y + this.startBox.h / 2;
+        } else if(underEndbox && leftOfEndbox) {
+          this.startX = this.startBox.x + this.startBox.w;
+          this.startY = this.startBox.y + this.startBox.h / 2;
+        } else if(underEndbox) {
+          this.startX = this.startBox.x + this.startBox.w/2;
+          this.startY = this.startBox.y;
+        }
       }
+
+      
 
     } else {
       this.startX = this.startBox.smallBoxX + this.startBox.smallBoxSize / 2;
@@ -281,25 +289,32 @@ class Line {
 
   update(x, y) {
 
-    if(this.endBox) {
+    if(this.endBox) { 
       let aboveEndbox = this.startBox.y + this.startBox.h < this.endBox.y;
       let underEndbox = this.startBox.y + this.startBox.h > this.endBox.y;
       let rightOfEndbox = this.startBox.x > this.endBox.x + this.endBox.w;
       let leftOfEndbox = this.startBox.x + this.startBox.w < this.endBox.x;
 
-      if(aboveEndbox) {
-        this.endX = this.endBox.x + this.endBox.w/2;
-        this.endY = this.endBox.y;
-      } else if(rightOfEndbox && underEndbox) {
-        this.endX = this.endBox.x + this.endBox.w;
-        this.endY = this.endBox.y + this.endBox.h/2;
-      } else if(leftOfEndbox && underEndbox) {
-        this.endX = this.endBox.x;
-        this.endY = this.endBox.y + this.endBox.h/2;
-      } else if(underEndbox) {
-        this.endX = this.endBox.x + this.endBox.w/2;
-        this.endY = this.endBox.y + this.endBox.h;
-      }  
+      if(this.endBox == this.startBox) { // Self transition
+        this.endX = this.startBox.x + this.startBox.w / 2 + 20;
+        this.endY = this.startBox.y;
+      } else {
+        if(aboveEndbox) {
+          this.endX = this.endBox.x + this.endBox.w/2;
+          this.endY = this.endBox.y;
+        } else if(rightOfEndbox && underEndbox) {
+          this.endX = this.endBox.x + this.endBox.w;
+          this.endY = this.endBox.y + this.endBox.h/2;
+        } else if(leftOfEndbox && underEndbox) {
+          this.endX = this.endBox.x;
+          this.endY = this.endBox.y + this.endBox.h/2;
+        } else if(underEndbox) {
+          this.endX = this.endBox.x + this.endBox.w/2;
+          this.endY = this.endBox.y + this.endBox.h;
+        }  
+      }
+
+      
 
 
       // this.endX = this.endBox.smallBoxX + this.endBox.smallBoxSize / 2;
@@ -316,12 +331,21 @@ class Line {
 
   complete(endBox) {
     this.endBox = endBox;
-    // this.endX = endBox.smallBoxX + endBox.smallBoxSize / 2;
-    // this.endY = endBox.smallBoxY + endBox.smallBoxSize / 2;
-    this.endX = endBox.x;
-    this.endY = endBox.y + endBox.h/2;
-    endBox.lines.push(this);
 
+    if(this.endBox == this.startBox)  {
+      this.startX = endBox.x + endBox.w / 2 - 20.
+      this.startY = endBox.y;
+      this.endX = endBox.x + endBox.w / 2 + 20;
+      this.endY = endBox.y;
+    } else {
+      // this.endX = endBox.smallBoxX + endBox.smallBoxSize / 2;
+      // this.endY = endBox.smallBoxY + endBox.smallBoxSize / 2;
+      this.endX = endBox.x;
+      this.endY = endBox.y + endBox.h/2;
+    }
+
+    endBox.lines.push(this);
+    
     // Open the new frame for the user to enter the label
     openNewFrame(this);
   }
@@ -336,16 +360,30 @@ class Line {
     noFill();
     beginShape();
     vertex(this.startX, this.startY);
-    bezierVertex(
-      // this.startX + this.controlOffset,
-      this.startX,
-      this.startY,
-      // this.endX - this.controlOffset,
-      this.startX,
-      this.endY,
-      this.endX,
-      this.endY
-    );
+    if(this.startBox == this.endBox) {
+      bezierVertex(
+        // this.startX + this.controlOffset,
+        this.startX - 20,
+        this.startY - 60,
+        // this.endX - this.controlOffset,
+        this.endX + 20,
+        this.endY - 60,
+        this.endX,
+        this.endY
+      );
+    } else {
+      bezierVertex(
+        // this.startX + this.controlOffset,
+        this.startX,
+        this.startY,
+        // this.endX - this.controlOffset,
+        this.startX,
+        this.endY,
+        this.endX,
+        this.endY
+      );
+    }
+    
     endShape();
 
     // Draw arrowhead
@@ -467,17 +505,14 @@ function CreateLineTransition(line) {
 
 
 let getTypeBtn = document.getElementsByClassName("fa_type")[0];
-  getTypeBtn.onclick = () => {
-
+getTypeBtn.onclick = () => {
     if(fa.states.length == 0) {
       alert("oh may gah")
     } else {
       fa.determineType();
       showFAType();
-    }
-
-    
-  }
+    }    
+}
 
 function showFAType() {
   let NFAEle = document.querySelectorAll('.fa span')[0];
@@ -493,7 +528,8 @@ function showFAType() {
   if(fa.type == TypeFA.NFA) {
     DFAEle.style.backgroundColor = "#9faec1";
     NFAEle.style.backgroundColor = "Green";
-  } else {
+  } 
+  if(fa.type == TypeFA.DFA){
     DFAEle.style.backgroundColor = "Green";
     NFAEle.style.backgroundColor = "#9faec1";
   }
