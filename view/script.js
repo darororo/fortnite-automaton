@@ -8,6 +8,7 @@ resetbutton.addEventListener("click", function () {
   boxList = [];
   boxCounter = 0;
   lines = [];
+  fa = new FA();
 });
 
 // Set up canvas using p5js
@@ -363,8 +364,8 @@ class Line {
       textAlign(CENTER, CENTER);
       text(
         this.label,
-        (this.startX + this.endX) / 2,
-        (this.startY + this.endY) / 2 - 10
+        (this.startX + this.endX) / 2 ,
+        (this.startY + this.endY) / 2 
       );
     }
   }
@@ -373,7 +374,7 @@ class Line {
 function startLine(box) {
   currentLine = new Line(box);
 }
-
+ 
 function completeLine() {
   // let mouseOverSmallBox;
   let mouseOverBox;
@@ -419,17 +420,22 @@ function openNewFrame(line) {
     <h2>Label Your Transition</h2>
     <span>Transition: </span>
     <input type = "text" id = "transitName">
-    <br></br>
+    <br></br> 
   `;
 
   // Add a save button
 let saveButton = document.createElement("button");
 saveButton.innerText = "Save";
 saveButton.onclick = () => {
-  const inputValue = document.getElementById("transitName").value.toUpperCase();
-  line.setLabel(inputValue);
-  document.body.removeChild(frame);
+  let inputValue = document.getElementById("transitName").value;
+  if(inputValue == "") {
+    line.setLabel("ε");
+  } else {
+    line.setLabel(inputValue);
+    document.body.removeChild(frame);
+  }
 
+  CreateLineTransition(line);  
   console.log(line.label);
 };
 frame.appendChild(saveButton);
@@ -444,5 +450,15 @@ frame.appendChild(saveButton);
   frame.appendChild(closeButton);
 
   // Append the frame to the body
-  document.body.appendChild(frame);
+  document.body.appendChild(frame);  
+}
+
+// Create Transition between 2 states connected by a line
+function CreateLineTransition(line) {
+  let char = line.label;
+  let fromIndex = boxList.indexOf(line.startBox);
+  let destIndex = boxList.indexOf(line.endBox);
+  if(char == 'ε') char = '';
+  console.log("From ", fromIndex, " to ", destIndex, " on ", char);
+  fa.createTransition(fromIndex, destIndex, char);
 }
