@@ -461,6 +461,29 @@ class FA {
         
         return minimizedDFA;
     }
+
+    // addState(state){
+    //     this.states.push(state);
+    // }
+
+    // addTransition(transition){
+    //     this.addTransition.push(transition);
+    // }
+
+    getFAData(){
+        let States = [];
+
+        for(let i = 0; i < this.states.length; i++) {
+            let data = {...this.states[i]};
+            delete(data.allTransitions);
+            States.push(data);
+        }
+
+        return {
+            states: States,
+
+        };
+    }
  
 }
 
@@ -514,7 +537,7 @@ class State {
                     state.transitionFrom("").forEach( s => {
                         if(!(currentStates.includes(s))) {
                             // Check if the state is already visited
-                            // if not add it to our list
+                            // if not add it to our lists
 
                             currentStates.push(s)
                             // Found a new state, set hasTransition flag to true to restart our loop
@@ -531,6 +554,10 @@ class State {
             }
         }
         return currentStates;
+    }
+
+    getTransitionData() {
+        return this.allTransitionsIndex;
     }
 
 }

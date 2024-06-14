@@ -41,6 +41,25 @@ function windowResized() {
 
 window.addEventListener("resize", windowResized);
 
+
+document.getElementById("save").addEventListener("click", function () {
+  saveFAToJSON(fa);
+});
+
+function saveFAToJSON(fa) {
+  const faData = fa.getFAData();
+  const jsonString = JSON.stringify(faData, null, 2);
+  downloadJSON(jsonString, "fa_data.json");
+}
+
+function downloadJSON(content, filename) {
+  const a = document.createElement("a");
+  const file = new Blob([content], {type: "application/json"});
+  a.href = URL.createObjectURL(file);
+  a.download = filename;
+  a.click();
+}
+
 // Draggable class
 class Draggable {
   constructor(posX, posY) {
