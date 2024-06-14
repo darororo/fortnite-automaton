@@ -38,6 +38,7 @@ class FA {
 
         }
 
+        let transitionCounts = 0;
         for(let i = 0; i < this.states.length; i++) {
             // loops through each state
 
@@ -65,7 +66,14 @@ class FA {
                     this.type = TypeFA.NFA;
                     return;
                 }
+
+                transitionCounts += possibleStates.length;
             }
+        }
+
+        if(transitionCounts == 0) {
+            this.type = TypeFA.NFA;
+            return
         }
 
         this.type = TypeFA.DFA;

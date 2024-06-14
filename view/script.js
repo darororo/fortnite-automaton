@@ -2,12 +2,16 @@ let canvasParent;
 const resetbutton = document.getElementById("reset");
 let boxCounter = 0;
 let fa = new FA();
+fa.alphabet = ["a", "b"];
 
 // Empty boxlist array if user clicks reset
 resetbutton.addEventListener("click", function () {
   boxList = [];
   boxCounter = 0;
   lines = [];
+  showFAType(); // reset color of type labels
+  fa = new FA();
+  fa.alphabet = ["a", "b"];
 });
 
 // Set up canvas using p5js
@@ -255,19 +259,26 @@ class Line {
       let rightOfEndbox = this.startBox.x > this.endBox.x + this.endBox.w;
       let leftOfEndbox = this.startBox.x + this.startBox.w < this.endBox.x;
 
-      if(aboveEndbox) {
-        this.startX = this.startBox.x + this.startBox.w / 2;
-        this.startY = this.startBox.y + this.startBox.h;
-      } else if(underEndbox && rightOfEndbox) {
-        this.startX = this.startBox.x;
-        this.startY = this.startBox.y + this.startBox.h / 2;
-      } else if(underEndbox && leftOfEndbox) {
-        this.startX = this.startBox.x + this.startBox.w;
-        this.startY = this.startBox.y + this.startBox.h / 2;
-      } else if(underEndbox) {
-        this.startX = this.startBox.x + this.startBox.w/2;
+      if(this.endBox == this.startBox) {  // Self transition
+        this.startX = this.startBox.x + this.startBox.w / 2 - 20;
         this.startY = this.startBox.y;
+      } else {
+        if(aboveEndbox) {
+          this.startX = this.startBox.x + this.startBox.w / 2;
+          this.startY = this.startBox.y + this.startBox.h;
+        } else if(underEndbox && rightOfEndbox) {
+          this.startX = this.startBox.x;
+          this.startY = this.startBox.y + this.startBox.h / 2;
+        } else if(underEndbox && leftOfEndbox) {
+          this.startX = this.startBox.x + this.startBox.w;
+          this.startY = this.startBox.y + this.startBox.h / 2;
+        } else if(underEndbox) {
+          this.startX = this.startBox.x + this.startBox.w/2;
+          this.startY = this.startBox.y;
+        }
       }
+
+      
 
     } else {
       this.startX = this.startBox.smallBoxX + this.startBox.smallBoxSize / 2;
@@ -278,25 +289,32 @@ class Line {
 
   update(x, y) {
 
-    if(this.endBox) {
+    if(this.endBox) { 
       let aboveEndbox = this.startBox.y + this.startBox.h < this.endBox.y;
       let underEndbox = this.startBox.y + this.startBox.h > this.endBox.y;
       let rightOfEndbox = this.startBox.x > this.endBox.x + this.endBox.w;
       let leftOfEndbox = this.startBox.x + this.startBox.w < this.endBox.x;
 
-      if(aboveEndbox) {
-        this.endX = this.endBox.x + this.endBox.w/2;
-        this.endY = this.endBox.y;
-      } else if(rightOfEndbox && underEndbox) {
-        this.endX = this.endBox.x + this.endBox.w;
-        this.endY = this.endBox.y + this.endBox.h/2;
-      } else if(leftOfEndbox && underEndbox) {
-        this.endX = this.endBox.x;
-        this.endY = this.endBox.y + this.endBox.h/2;
-      } else if(underEndbox) {
-        this.endX = this.endBox.x + this.endBox.w/2;
-        this.endY = this.endBox.y + this.endBox.h;
-      }  
+      if(this.endBox == this.startBox) { // Self transition
+        this.endX = this.startBox.x + this.startBox.w / 2 + 20;
+        this.endY = this.startBox.y;
+      } else {
+        if(aboveEndbox) {
+          this.endX = this.endBox.x + this.endBox.w/2;
+          this.endY = this.endBox.y;
+        } else if(rightOfEndbox && underEndbox) {
+          this.endX = this.endBox.x + this.endBox.w;
+          this.endY = this.endBox.y + this.endBox.h/2;
+        } else if(leftOfEndbox && underEndbox) {
+          this.endX = this.endBox.x;
+          this.endY = this.endBox.y + this.endBox.h/2;
+        } else if(underEndbox) {
+          this.endX = this.endBox.x + this.endBox.w/2;
+          this.endY = this.endBox.y + this.endBox.h;
+        }  
+      }
+
+      
 
 
       // this.endX = this.endBox.smallBoxX + this.endBox.smallBoxSize / 2;
@@ -313,12 +331,21 @@ class Line {
 
   complete(endBox) {
     this.endBox = endBox;
-    // this.endX = endBox.smallBoxX + endBox.smallBoxSize / 2;
-    // this.endY = endBox.smallBoxY + endBox.smallBoxSize / 2;
-    this.endX = endBox.x;
-    this.endY = endBox.y + endBox.h/2;
-    endBox.lines.push(this);
 
+    if(this.endBox == this.startBox)  {
+      this.startX = endBox.x + endBox.w / 2 - 20.
+      this.startY = endBox.y;
+      this.endX = endBox.x + endBox.w / 2 + 20;
+      this.endY = endBox.y;
+    } else {
+      // this.endX = endBox.smallBoxX + endBox.smallBoxSize / 2;
+      // this.endY = endBox.smallBoxY + endBox.smallBoxSize / 2;
+      this.endX = endBox.x;
+      this.endY = endBox.y + endBox.h/2;
+    }
+
+    endBox.lines.push(this);
+    
     // Open the new frame for the user to enter the label
     openNewFrame(this);
   }
@@ -333,16 +360,30 @@ class Line {
     noFill();
     beginShape();
     vertex(this.startX, this.startY);
-    bezierVertex(
-      // this.startX + this.controlOffset,
-      this.startX,
-      this.startY,
-      // this.endX - this.controlOffset,
-      this.startX,
-      this.endY,
-      this.endX,
-      this.endY
-    );
+    if(this.startBox == this.endBox) {
+      bezierVertex(
+        // this.startX + this.controlOffset,
+        this.startX - 20,
+        this.startY - 60,
+        // this.endX - this.controlOffset,
+        this.endX + 20,
+        this.endY - 60,
+        this.endX,
+        this.endY
+      );
+    } else {
+      bezierVertex(
+        // this.startX + this.controlOffset,
+        this.startX,
+        this.startY,
+        // this.endX - this.controlOffset,
+        this.startX,
+        this.endY,
+        this.endX,
+        this.endY
+      );
+    }
+    
     endShape();
 
     // Draw arrowhead
@@ -363,8 +404,8 @@ class Line {
       textAlign(CENTER, CENTER);
       text(
         this.label,
-        (this.startX + this.endX) / 2,
-        (this.startY + this.endY) / 2 - 10
+        (this.startX + this.endX) / 2 ,
+        (this.startY + this.endY) / 2 
       );
     }
   }
@@ -373,7 +414,7 @@ class Line {
 function startLine(box) {
   currentLine = new Line(box);
 }
-
+ 
 function completeLine() {
   // let mouseOverSmallBox;
   let mouseOverBox;
@@ -419,17 +460,22 @@ function openNewFrame(line) {
     <h2>Label Your Transition</h2>
     <span>Transition: </span>
     <input type = "text" id = "transitName">
-    <br></br>
+    <br></br> 
   `;
 
   // Add a save button
 let saveButton = document.createElement("button");
 saveButton.innerText = "Save";
 saveButton.onclick = () => {
-  const inputValue = document.getElementById("transitName").value.toUpperCase();
-  line.setLabel(inputValue);
-  document.body.removeChild(frame);
+  let inputValue = document.getElementById("transitName").value;
+  if(inputValue == "") {
+    line.setLabel("ε");
+  } else {
+    line.setLabel(inputValue);
+    document.body.removeChild(frame);
+  }
 
+  CreateLineTransition(line);  
   console.log(line.label);
 };
 frame.appendChild(saveButton);
@@ -444,5 +490,49 @@ frame.appendChild(saveButton);
   frame.appendChild(closeButton);
 
   // Append the frame to the body
-  document.body.appendChild(frame);
+  document.body.appendChild(frame);  
 }
+
+// Create Transition between 2 states connected by a line
+function CreateLineTransition(line) {
+  let char = line.label;
+  let fromIndex = boxList.indexOf(line.startBox);
+  let destIndex = boxList.indexOf(line.endBox);
+  if(char == 'ε') char = '';
+  console.log("From ", fromIndex, " to ", destIndex, " on ", char);
+  fa.createTransition(fromIndex, destIndex, char);
+}
+
+
+let getTypeBtn = document.getElementsByClassName("fa_type")[0];
+getTypeBtn.onclick = () => {
+    if(fa.states.length == 0) {
+      alert("oh may gah")
+    } else {
+      fa.determineType();
+      showFAType();
+    }    
+}
+
+function showFAType() {
+  let NFAEle = document.querySelectorAll('.fa span')[0];
+  let DFAEle = document.querySelectorAll('.fa span')[1];
+
+  // After Reset, set to default color 
+  if(boxCounter == 0) {
+    DFAEle.style.backgroundColor = "#9faec1";
+    NFAEle.style.backgroundColor = "#9faec1";
+    return;
+  }
+
+  if(fa.type == TypeFA.NFA) {
+    DFAEle.style.backgroundColor = "#9faec1";
+    NFAEle.style.backgroundColor = "Green";
+  } 
+  if(fa.type == TypeFA.DFA){
+    DFAEle.style.backgroundColor = "Green";
+    NFAEle.style.backgroundColor = "#9faec1";
+  }
+  
+}
+
