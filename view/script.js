@@ -1,7 +1,6 @@
 let canvasParent;
 let boxCounter = 0;
 let fa = new FA();
-fa.alphabet = ["a", "b"];
 
 //get button elements from html
 const resetbutton = document.getElementById("reset");
@@ -10,7 +9,8 @@ const minimizeBtnn = document.getElementById("minimize");
 const convertBtn = document.getElementById("convertNFA");
 const testStringInp = document.getElementById("textInput");
 const testStringBtn = document.getElementById("teststr");
-
+const alphabetInp = document.getElementById('alphabet-input');
+const alphabetResult = document.getElementById("alphabet-result");
 
 // Empty boxlist array if user clicks reset
 resetbutton.addEventListener("click", function () {
@@ -26,7 +26,13 @@ resetbutton.addEventListener("click", function () {
   
   convertBtn.disabled = true;
   convertBtn.style.backgroundColor = "grey";
+
+  alphabetResult.style.display = 'none';
 });
+
+// Handle Alphabet Setup
+alphabetInp.addEventListener("change", setAlphabetFA);
+
 
 // Set up canvas using p5js
 function setup() {
@@ -587,4 +593,20 @@ function showFAType() {
     minimizeBtnn.style.background = "orange"; 
   }
   
+}
+
+function setAlphabetFA() {
+  let chars = alphabetInp.value;
+  chars = chars.split(',');
+  for(let i = 0; i < chars.length; i++) chars[i] = chars[i].trim();
+  chars = new Set(chars); // Remove duplicates
+
+  let alphabetSet = Array.from(chars);
+  alphabetSet = alphabetSet.filter(char => char.length == 1); 
+  
+  fa.alphabet = alphabetSet; 
+  alphabetResult.innerText = `[${fa.alphabet}]`;
+  alphabetResult.style.display = "inline";
+  
+  console.log(fa.alphabet);
 }
