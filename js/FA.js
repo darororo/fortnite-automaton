@@ -102,14 +102,14 @@ class FA {
         if(str != "") {
             for(let i = 0; i < str.length; i++) {
                 if( !(this.alphabet.includes(str.charAt(i))) ) {
-                    this.output = "Reject: Character not in alphabet"
+                    this.output = 0;
                 }
             }
         }
 
         if(this.finalStates.length == 0) { 
-            this.output = "Rejected: Empty Final State";
-            console.log(str + ": " + this.output)
+            this.output = 0;
+            console.log(str + ": Rejected: Empty Final State");
             return;
         }
 
@@ -128,11 +128,11 @@ class FA {
 
         if(this.finalStates.includes(currentState)) {
             console.log("FUCK YEAH");
-            this.output = "Accepted"
+            this.output = 1;
 
         } else {
             console.log("FUCK NO");
-            this.output = "Rejected";
+            this.output = 0;
         }
 
     }
@@ -181,11 +181,11 @@ class FA {
 
         if(finalStateCounts > 0) {
             console.log("FUCK YEAH");
-            this.output = "Accepted"
+            this.output = 1;
 
         } else {
             console.log("FUCK NO");
-            this.output = "Rejected";
+            this.output = 0;
         }
 
         console.log("final state counts: " + finalStateCounts)
