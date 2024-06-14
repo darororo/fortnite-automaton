@@ -3,6 +3,9 @@ const TypeFA = Object.freeze({
     NFA: 1,
 })
 
+// TODO: Change transitioning from state to state, 
+// to transitioning via each state index 
+
 class FA {
     alphabet = [];
     states = [];
@@ -18,6 +21,10 @@ class FA {
 
     createTransition(fromStateIndex, destStateIndex, char) {
         this.states[fromStateIndex].createTransition(char, this.states[destStateIndex]);
+    }
+
+    createTransitionIndex(fromStateIndex, destStateIndex, char) {
+        this.states[fromStateIndex].createTransitionIndex(char, destStateIndex);
     }
 
     makeFinalState(state) {
@@ -40,7 +47,6 @@ class FA {
 
         let transitionCounts = 0;
         for(let i = 0; i < this.states.length; i++) {
-            // loops through each state
 
             for(const [input, possibleStates] of Object.entries(this.states[i].allTransitions)) {
                 // get all possible transition states of each input in the current state
@@ -53,12 +59,6 @@ class FA {
                     this.type = TypeFA.NFA;
                     return;
                 }
-
-                // if(this.states[i].allTransitions[input] === undefined) {
-                //     // if the input is not recognized, it's an NFA
-                //     this.type = TypeFA.NFA;
-                //     return;
-                // }
 
                 if(possibleStates.length > 1) {
                     // if the current input has more than 1 possible state
@@ -465,7 +465,8 @@ class FA {
 }
 
 class State {
-    allTransitions = {}; // all transitions of a state
+    allTransitions = {}; 
+    allTransitionsIndex = {};
 
     createTransition(str, nextState) {
         // if there is no trasition for the current alphabet yet,  
@@ -477,6 +478,19 @@ class State {
 
         // add a next state to the possible transitions of the current input 
         this.allTransitions[str].push(nextState);
+    }
+
+    createTransitionIndex(str, destIndex) { // Indexes are easier to load
+        // if there is no trasition for the current alphabet yet,  
+        // initialize an array to store possible transitions
+        if(!this.allTransitionsIndex[str]) { this.allTransitionsIndex[str] = [] }
+
+        // do nothing if the same transition using the str already exists
+        if(this.allTransitionsIndex[str].includes(destIndex)) { return; }
+
+        // add a next state to the possible transitions of the current input 
+        this.allTransitionsIndex[str].push(destIndex);
+        
     }
 
     transitionFrom(str) {

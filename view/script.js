@@ -501,6 +501,7 @@ function CreateLineTransition(line) {
   if(char == 'ε') char = '';
   console.log("From ", fromIndex, " to ", destIndex, " on ", char);
   fa.createTransition(fromIndex, destIndex, char);
+  fa.createTransitionIndex(fromIndex, destIndex, char);
 }
 
 
