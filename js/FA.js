@@ -1012,7 +1012,7 @@ f12.createTransition(2, 5, '1');
 
 f12.createTransition(3, 4, '0');
 f12.createTransition(3, 5, '1');
-f12.createTransition(3, 3, '1');
+// f12.createTransition(3, 3, '1');
 
 
 f12.createTransition(4, 4, '0');
@@ -1024,7 +1024,7 @@ f12.createTransition(5, 5, '1');
 console.log(f12.states[2]);
 console.log(f12.states[3]);
 console.log(f12.states[5]);
-f12.deleteTransitionToState(5);
+// f12.deleteTransitionToState(5);
 console.log(f12.states[2]);
 console.log(f12.states[3]);
 console.log(f12.states[5]);
@@ -1035,7 +1035,7 @@ console.log(f12.states[5]);
 // console.log(f12.states[5]);
 // console.log(f12.states[4]);
 
-// f12.getType();
+f12.getType();
 
 // f12.checkStr("01") // accept
 // f12.checkStr("0100") // accept
@@ -1046,12 +1046,12 @@ console.log(f12.states[5]);
 
 
 
-// let f12Min = f12.getMinimizedDFA();
-// console.log(f12Min);
+let f12Min = f12.getMinimizedDFA();
+console.log(f12Min.states.length);
 
-// f12Min.checkStr("01") // accept
-// f12Min.checkStr("0100") // accept
+f12Min.checkStr("01") // accept
+f12Min.checkStr("0100") // accept
 
-// f12Min.checkStr("01101") // reject
-// f12Min.checkStr("01001") // reject
+f12Min.checkStr("01101") // reject
+f12Min.checkStr("01001") // reject
 

@@ -503,33 +503,34 @@ function openNewFrame(line) {
   `;
 
   // Add a save button
-let saveButton = document.createElement("button");
-saveButton.innerText = "Save";
-saveButton.onclick = () => {
-  let inputValue = document.getElementById("transitName").value;
-  if(inputValue == "") {
-    line.setLabel("ε");
-  } else {
-    line.setLabel(inputValue);
+  let saveButton = document.createElement("button");
+  saveButton.innerText = "Save";
+  saveButton.onclick = () => {
+    let inputValue = document.getElementById("transitName").value;
+    if(inputValue == "") {
+      line.setLabel("ε");
+    } else {
+      line.setLabel(inputValue);
+    }
     document.body.removeChild(frame);
-  }
 
-  CreateLineTransition(line);  
-  console.log(line.label);
-};
-frame.appendChild(saveButton);
-
-  // Add a close button
-  let closeButton = document.createElement("button");
-  closeButton.innerText = "Close";
-  closeButton.style.marginLeft = "10px";
-  closeButton.onclick = () => {
-    document.body.removeChild(frame);
+    CreateLineTransition(line);  
+    console.log(line.label);
   };
-  frame.appendChild(closeButton);
+  frame.appendChild(saveButton);
 
-  // Append the frame to the body
-  document.body.appendChild(frame);  
+    // Add a close button
+    let closeButton = document.createElement("button");
+    closeButton.innerText = "Close";
+    closeButton.style.marginLeft = "10px";
+    closeButton.onclick = () => {
+      document.body.removeChild(frame);
+      lines.pop();
+    };
+    frame.appendChild(closeButton);
+
+    // Append the frame to the body
+    document.body.appendChild(frame);  
 }
 
 // Create Transition between 2 states connected by a line
