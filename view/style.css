@@ -1,13 +1,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap');
 
 button:hover{
+    cursor: pointer;
     box-shadow: 3px 3px 4px black;
     transition: all .3s;
 }
 
 button:active{
+    cursor: pointer;
     box-shadow: 0px 0px 0px;
     transition: all 0s;
+}
+
+button:disabled{
+    cursor: not-allowed;
+    box-shadow: 0px 0px 0px;
 }
 
 body{
@@ -23,7 +30,7 @@ main{
 }
 
 aside{
-    height: 100%;
+    height: auto;
     width: 250px; /* Adjust the width as needed */
     border: 1px solid black;
     background-color: #495e89;
@@ -86,7 +93,11 @@ aside h3{
 }
 
 #minimize {
-    background-color: rgb(237, 110, 5);
+    background-color: grey;
+}
+
+#convertNFA{
+    background-color: grey;
 }
 
 .Rholder{
@@ -134,7 +145,7 @@ aside h3{
     height: 7rem;
     border: 1px solid black;
     box-sizing: border-box;
-    height: auto;
+    height: 15rem;
 }
 
 .bottom span{
@@ -143,16 +154,19 @@ aside h3{
 }
 
 .acc {
+    border-bottom: 1px solid black;
     font-weight: bold;
     background-color: yellowgreen;
 }
 
 .rej {
+    border-bottom: 1px solid black;
     font-weight: bold;
     background-color: red;
 }
 
 .res {
+    border-bottom: 1px solid black;
     font-weight: bold;
     background-color: skyblue;
 }
@@ -175,6 +189,16 @@ aside h3{
     top: 80%;
 }
 
+#alphabet_input{
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    border: 1px solid black;
+    width: 90%;
+    top: 80%;
+    margin-top: 5px;
+}
+
+
 #teststr{
     position: relative;
     top: 80%;
@@ -184,7 +208,51 @@ aside h3{
     cursor: pointer;
 }
 
+#acc_input{
+    border: none;
+    resize: none;
+    width: 99%;
+    height: 15em;
+}
 
+#acc_input:focus{
+    outline: none;
+    border: none;
+    resize: none;
+    width: 99%;
+    height: 15em;
+}
+
+#acc_input:active{
+    outline: none; 
+    border: none;
+    resize: none;
+    width: 99%;
+    height: 15em;
+}
+
+#rej_input{
+    border: none;
+    resize: none;
+    width: 99%;
+    height: 15em;
+}
+
+#rej_input:focus{
+    outline: none;
+    border: none;
+    resize: none;
+    width: 99%;
+    height: 15em;
+}
+
+#rej_input:active{
+    outline: none; 
+    border: none;
+    resize: none;
+    width: 99%;
+    height: 15em;
+}
 
 /* footer {
     display: flex;

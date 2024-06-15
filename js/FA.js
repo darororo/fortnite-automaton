@@ -102,14 +102,14 @@ class FA {
         if(str != "") {
             for(let i = 0; i < str.length; i++) {
                 if( !(this.alphabet.includes(str.charAt(i))) ) {
-                    this.output = "Reject: Character not in alphabet"
+                    this.output = 0;
                 }
             }
         }
 
         if(this.finalStates.length == 0) { 
-            this.output = "Rejected: Empty Final State";
-            console.log(str + ": " + this.output)
+            this.output = 0;
+            console.log(str + ": Rejected: Empty Final State");
             return;
         }
 
@@ -128,11 +128,11 @@ class FA {
 
         if(this.finalStates.includes(currentState)) {
             console.log("FUCK YEAH");
-            this.output = "Accepted"
+            this.output = 1;
 
         } else {
             console.log("FUCK NO");
-            this.output = "Rejected";
+            this.output = 0;
         }
 
     }
@@ -181,11 +181,11 @@ class FA {
 
         if(finalStateCounts > 0) {
             console.log("FUCK YEAH");
-            this.output = "Accepted"
+            this.output = 1;
 
         } else {
             console.log("FUCK NO");
-            this.output = "Rejected";
+            this.output = 0;
         }
 
         console.log("final state counts: " + finalStateCounts)
@@ -461,6 +461,29 @@ class FA {
         
         return minimizedDFA;
     }
+
+    // addState(state){
+    //     this.states.push(state);
+    // }
+
+    // addTransition(transition){
+    //     this.addTransition.push(transition);
+    // }
+
+    getFAData(){
+        let States = [];
+
+        for(let i = 0; i < this.states.length; i++) {
+            let data = {...this.states[i]};
+            delete(data.allTransitions);
+            States.push(data);
+        }
+
+        return {
+            states: States,
+
+        };
+    }
  
 }
 
@@ -514,7 +537,7 @@ class State {
                     state.transitionFrom("").forEach( s => {
                         if(!(currentStates.includes(s))) {
                             // Check if the state is already visited
-                            // if not add it to our list
+                            // if not add it to our lists
 
                             currentStates.push(s)
                             // Found a new state, set hasTransition flag to true to restart our loop
@@ -531,6 +554,10 @@ class State {
             }
         }
         return currentStates;
+    }
+
+    getTransitionData() {
+        return this.allTransitionsIndex;
     }
 
 }

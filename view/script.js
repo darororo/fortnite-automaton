@@ -1,8 +1,16 @@
 let canvasParent;
-const resetbutton = document.getElementById("reset");
 let boxCounter = 0;
 let fa = new FA();
-fa.alphabet = ["a", "b"];
+
+//get button elements from html
+const resetbutton = document.getElementById("reset");
+const getTypeBtn = document.getElementById("testfa");
+const minimizeBtnn = document.getElementById("minimize");
+const convertBtn = document.getElementById("convertNFA");
+const testStringInp = document.getElementById("textInput");
+const testStringBtn = document.getElementById("teststr");
+const alphabetInp = document.getElementById('alphabet-input');
+const alphabetResult = document.getElementById("alphabet-result");
 
 // Empty boxlist array if user clicks reset
 resetbutton.addEventListener("click", function () {
@@ -12,7 +20,19 @@ resetbutton.addEventListener("click", function () {
   showFAType(); // reset color of type labels
   fa = new FA();
   fa.alphabet = ["a", "b"];
+
+  minimizeBtnn.disabled = true;
+  minimizeBtnn.style.backgroundColor = "grey";
+  
+  convertBtn.disabled = true;
+  convertBtn.style.backgroundColor = "grey";
+
+  alphabetResult.style.display = 'none';
 });
+
+// Handle Alphabet Setup
+alphabetInp.addEventListener("change", setAlphabetFA);
+
 
 // Set up canvas using p5js
 function setup() {
@@ -40,6 +60,25 @@ function windowResized() {
 }
 
 window.addEventListener("resize", windowResized);
+
+
+document.getElementById("save").addEventListener("click", function () {
+  saveFAToJSON(fa);
+});
+
+function saveFAToJSON(fa) {
+  const faData = fa.getFAData();
+  const jsonString = JSON.stringify(faData, null, 2);
+  downloadJSON(jsonString, "fa_data.json");
+}
+
+function downloadJSON(content, filename) {
+  const a = document.createElement("a");
+  const file = new Blob([content], {type: "application/json"});
+  a.href = URL.createObjectURL(file);
+  a.download = filename;
+  a.click();
+}
 
 // Draggable class
 class Draggable {
@@ -502,18 +541,31 @@ function CreateLineTransition(line) {
   console.log("From ", fromIndex, " to ", destIndex, " on ", char);
   fa.createTransition(fromIndex, destIndex, char);
   fa.createTransitionIndex(fromIndex, destIndex, char);
+  fa.makeFinalState(fa.states[0])
 }
 
+testStringBtn.addEventListener('click', function(){
+  console.log(testStringInp.value);
+  fa.checkStr(testStringInp.value);
 
-let getTypeBtn = document.getElementsByClassName("fa_type")[0];
-getTypeBtn.onclick = () => {
-    if(fa.states.length == 0) {
-      alert("oh may gah")
-    } else {
-      fa.determineType();
-      showFAType();
-    }    
-}
+  if(fa.output == 0){
+    document.getElementById("str-result").innerText = "Reject";
+  }else{
+    document.getElementById("str-result").innerText = "Accept";
+  }
+  document.getElementById("str-result").style.display = "inline";
+
+})
+
+
+getTypeBtn.addEventListener('click', function(){
+  if(fa.states.length == 0) {
+    alert("oh may gah")
+  } else {
+    fa.determineType();
+    showFAType();
+  }    
+})
 
 function showFAType() {
   let NFAEle = document.querySelectorAll('.fa span')[0];
@@ -529,11 +581,32 @@ function showFAType() {
   if(fa.type == TypeFA.NFA) {
     DFAEle.style.backgroundColor = "#9faec1";
     NFAEle.style.backgroundColor = "Green";
+
+    convertBtn.disabled = false;
+    convertBtn.style.backgroundColor = "orange"
   } 
   if(fa.type == TypeFA.DFA){
     DFAEle.style.backgroundColor = "Green";
     NFAEle.style.backgroundColor = "#9faec1";
+
+    minimizeBtnn.disabled = false;
+    minimizeBtnn.style.background = "orange"; 
   }
   
 }
 
+function setAlphabetFA() {
+  let chars = alphabetInp.value;
+  chars = chars.split(',');
+  for(let i = 0; i < chars.length; i++) chars[i] = chars[i].trim();
+  chars = new Set(chars); // Remove duplicates
+
+  let alphabetSet = Array.from(chars);
+  alphabetSet = alphabetSet.filter(char => char.length == 1); 
+  
+  fa.alphabet = alphabetSet; 
+  alphabetResult.innerText = `[${fa.alphabet}]`;
+  alphabetResult.style.display = "inline";
+  
+  console.log(fa.alphabet);
+}

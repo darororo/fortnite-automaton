@@ -18,13 +18,22 @@
             <span>DFA</span>
           </div>
         </div>
+
         <div class="asideBTN">
-          <button id="testfa">Test FA</button>
-          <button id="minimize">Minimize DFA</button>
+          <button id="testfa">Determine Type</button>
+          <button id="minimize" disabled>Minimize DFA</button>
+          <button id="convertNFA" disabled>Convert NFA to DFA</button>
           <label id="labelText" for="">Test / Debug:</label>
           <input id="textInput" type="text" />
           <button id="teststr" class="stringBTN">Test String</button>
+          <span style="position: relative; top: 80%; display: none;" id="str-result">Reject</span>
         </div>
+        
+        <div>
+          <span id="alphabet-result" style="color: plum; display: none;">[123]</span>
+        </div>
+        <span id='alphabet-label' style="color: gold; font-weight: 100px;"> Alphabet </span>
+        <input type="text" id="alphabet-input">
       </aside>
 
       <!--right content-->
@@ -48,9 +57,11 @@
         <div class="bottom">
           <div class="accept">
             <span class="acc">Accept</span>
+            <textarea name="acc_input" id="acc_input" placeholder=""></textarea>
           </div>
           <div class="reject">
             <span class="rej">Reject</span>
+            <textarea name="rej_input" id="rej_input"></textarea>
           </div>
           <div class="result">
             <span class="res">Result</span>
