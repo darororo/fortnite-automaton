@@ -65,7 +65,9 @@ window.addEventListener("resize", windowResized);
 document.getElementById("save").addEventListener("click", function () {
   saveFAToJSON(fa);
 });
-
+document.getElementById("load").addEventListener("click",function(){
+  loadFAToJSON();
+});
 function saveFAToJSON(fa) {
   const faData = fa.getFAData();
   const jsonString = JSON.stringify(faData, null, 2);
@@ -79,6 +81,53 @@ function downloadJSON(content, filename) {
   a.download = filename;
   a.click();
 }
+
+function loadFAToJSON(){
+  const input = document.createElement("input");
+  input.type = "file";
+  input.accept = "application/json";
+  input.onchange = e =>{
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.onload = function(event){
+      const faData = JSON.parse(event.target.result);
+      restoreFAFromJSON(faData);
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
+function restoreFAFromJSON(faData) {
+  fa.setFAData(faData);
+
+  boxList = [];
+  lines = [];
+  boxCounter = 0;
+
+  faData.states.forEach(stateData => {
+    let box = new Draggable(stateData.x, stateData.y);
+    box.label = stateData.label;
+    box.createState();
+    boxList.push(box);
+    boxCounter++; // Ensure boxCounter is in sync with restored boxes
+  });
+
+  // Check if transitions exist before iterating
+  if (faData.transitions) {
+    faData.transitions.forEach(transitionData => {
+      let startBox = boxList.find(box => box.label === transitionData.startLabel);
+      let endBox = boxList.find(box => box.label === transitionData.endLabel);
+      if (startBox && endBox) {
+        let line = new Line(startBox);
+        line.complete(endBox);
+        line.setLabel(transitionData.label);
+        lines.push(line);
+      }
+    });
+  }
+}
+
 
 // Draggable class
 class Draggable {

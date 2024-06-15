@@ -481,10 +481,23 @@ class FA {
 
         return {
             states: States,
-
+            alphabet: this.alphabet
         };
     }
- 
+    setFAData(data) {
+        // Set alphabet
+        this.alphabet = data.alphabet;
+
+        // Clear existing states
+        this.states = [];
+
+        // Recreate states from the data
+        for (let stateData of data.states) {
+            let newState = new State();
+            newState.allTransitionsIndex = stateData.allTransitionsIndex;
+            this.states.push(newState);
+        }
+    }
 }
 
 class State {
