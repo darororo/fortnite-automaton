@@ -19,16 +19,73 @@ class FA {
         console.log("state created");
     }
 
+    // Doesn't actually delete the state, only removes related transitions
+    // Deleting the state will mess up the indexing of the FA
+    deleteTransitionToState(destIndex) {    
+        let state = this.states[destIndex];
+        if(!state) {
+            console.log("State doesn't exist")
+            return;
+        };
+
+        for(let i = 0; i < this.states.length; i++) {
+            this.alphabet.forEach(char => {
+                this.deleteTransition(i, destIndex, char);
+            })
+
+            this.deleteTransition(i, destIndex, "");
+        }
+
+    }
+
     createTransition(fromStateIndex, destStateIndex, char) {
         this.states[fromStateIndex].createTransition(char, this.states[destStateIndex]);
+        this.createTransitionIndex(fromStateIndex, destStateIndex, char);
     }
 
     createTransitionIndex(fromStateIndex, destStateIndex, char) {
         this.states[fromStateIndex].createTransitionIndex(char, destStateIndex);
     }
 
+    deleteTransition(fromStateIndex, destStateIndex, char) {
+        let fromState = this.states[fromStateIndex]; 
+        let destState = this.states[destStateIndex];
+
+        if(!fromState || !destState) return;
+        if(!fromState.allTransitions[char]) return;
+
+        let index = fromState.allTransitions[char].indexOf(destState);
+        if(index === -1) return;    // return when destination state doesn't exist
+        fromState.allTransitions[char].splice(index, 1);
+
+        index = fromState.allTransitionsIndex[char].indexOf(destStateIndex);
+        fromState.allTransitionsIndex[char].splice(index, 1);
+
+        if(fromState.allTransitionsIndex[char].length === 0) {
+            delete(fromState.allTransitionsIndex[char])
+            delete(fromState.allTransitions[char])
+        }
+    }
+
+    deleteAllTransitionFrom(fromStateIndex) {
+        let state = this.states[fromStateIndex];
+        if(!state) return; 
+
+        for(const [char, dest] of Object.entries(state.allTransitions)) {
+            delete(state.allTransitions[char]);
+            delete(state.allTransitionsIndex[char]);
+        }
+
+    }
+
     makeFinalState(state) {
         if(!(this.finalStates.includes(state))) this.finalStates.push(state)
+    }
+
+    deleteFinalState(state) {
+        if(!this.finalStates.includes(state)) return;
+        let index = this.finalStates.indexOf(state);
+        this.finalStates.splice(index, 1);
     }
 
     determineType() {
@@ -686,12 +743,19 @@ class State {
 // f5.states[0].createTransition("", f5.states[0])
 // f5.states[0].createTransition("", f5.states[1])
 // f5.states[1].createTransition("", f5.states[0])
+// f5.createTransition(0, 0, "");
+// f5.createTransition(0, 1, "");
+
+// f5.createTransition(1, 0, "");
 
 // f5.states[0].epsilonClosure();
 
 // console.log(f5.states[0].epsilonClosure())
 
 // f5.checkStr("b")
+// console.log(f5.states[0]);
+// f5.states[0].deleteAllTransition();
+// console.log(f5.states[0]);
 
 
 // Chapter 5 homework NFA To DFA 1
@@ -928,32 +992,48 @@ class State {
 // f11Min.checkStr("011");    // FUCK NO
 // f11Min.checkStr("010");    // FUCK NO
 
-// let f12 = new FA();
-// f12.alphabet = ['0', '1'];
+let f12 = new FA();
+f12.alphabet = ['0', '1'];
 
-// for(let i = 0; i < 6; i++) f12.createState();
+for(let i = 0; i < 6; i++) f12.createState();
 
-// f12.makeFinalState(f12.states[3]);
-// f12.makeFinalState(f12.states[4]);
+f12.makeFinalState(f12.states[3]);
+f12.makeFinalState(f12.states[4]);
 
 
-// f12.createTransition(0, 1, '0');
-// f12.createTransition(0, 2, '1');
+f12.createTransition(0, 1, '0');
+f12.createTransition(0, 2, '1');
 
-// f12.createTransition(1, 0, '0');
-// f12.createTransition(1, 3, '1');
+f12.createTransition(1, 0, '0');
+f12.createTransition(1, 3, '1');
 
-// f12.createTransition(2, 4, '0');
-// f12.createTransition(2, 5, '1');
+f12.createTransition(2, 4, '0');
+f12.createTransition(2, 5, '1');
 
-// f12.createTransition(3, 4, '0');
-// f12.createTransition(3, 5, '1');
+f12.createTransition(3, 4, '0');
+f12.createTransition(3, 5, '1');
+f12.createTransition(3, 3, '1');
 
-// f12.createTransition(4, 4, '0');
-// f12.createTransition(4, 5, '1');
 
-// f12.createTransition(5, 5, '0');
-// f12.createTransition(5, 5, '1');
+f12.createTransition(4, 4, '0');
+f12.createTransition(4, 5, '1');
+
+f12.createTransition(5, 5, '0');
+f12.createTransition(5, 5, '1');
+
+console.log(f12.states[2]);
+console.log(f12.states[3]);
+console.log(f12.states[5]);
+f12.deleteTransitionToState(5);
+console.log(f12.states[2]);
+console.log(f12.states[3]);
+console.log(f12.states[5]);
+
+// console.log(f12.states[5]);
+// console.log(f12.states[4]);
+// f12.deleteAllTransitionFrom(5);
+// console.log(f12.states[5]);
+// console.log(f12.states[4]);
 
 // f12.getType();
 
