@@ -287,7 +287,7 @@ function setAlphabetFA() {
 
 
 function popupCanvas(faObject) {
-  let win = window.open('popup/canvas.html', null, 'popup, width=800, height=600');
+  let win = window.open('view/popup/canvas.html', null, 'popup, width=800, height=600');
   win.onload = () => {
     win.postMessage({"FA" : faObject})
   }

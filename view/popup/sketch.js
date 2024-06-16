@@ -30,7 +30,7 @@ function windowResized() {
 }
 
 let boxList = [];
-let lines = [];
+let lineList = [];
 let currentLine = null;
 
 function draw() {
@@ -40,7 +40,7 @@ function draw() {
     boxList[i].over();
     boxList[i].show();
   }
-  for (let line of lines) {
+  for (let line of lineList) {
     line.show();
   }
   if (currentLine) {

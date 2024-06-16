@@ -349,15 +349,9 @@ function startLine(box) {
 }
      
 function completeLine() {
-  // let mouseOverSmallBox;
   let mouseOverBox;
 
   for (let box of boxList) {
-    // mouseOverSmallBox = mouseX > box.smallBoxX &&
-    //               mouseX < box.smallBoxX + box.smallBoxSize &&
-    //               mouseY > box.smallBoxY &&
-    //               mouseY < box.smallBoxY + box.smallBoxSize;
-
     mouseOverBox = mouseX > box.x &&
                   mouseX < box.x + box.w &&
                   mouseY > box.h &&
