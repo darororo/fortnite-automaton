@@ -992,42 +992,44 @@ class State {
 // f11Min.checkStr("011");    // FUCK NO
 // f11Min.checkStr("010");    // FUCK NO
 
-let f12 = new FA();
-f12.alphabet = ['0', '1'];
+// let f12 = new FA();
+// f12.alphabet = ['0', '1'];
 
-for(let i = 0; i < 6; i++) f12.createState();
+// for(let i = 0; i < 6; i++) f12.createState();
 
-f12.makeFinalState(f12.states[3]);
-f12.makeFinalState(f12.states[4]);
-
-
-f12.createTransition(0, 1, '0');
-f12.createTransition(0, 2, '1');
-
-f12.createTransition(1, 0, '0');
-f12.createTransition(1, 3, '1');
-
-f12.createTransition(2, 4, '0');
-f12.createTransition(2, 5, '1');
-
-f12.createTransition(3, 4, '0');
-f12.createTransition(3, 5, '1');
-// f12.createTransition(3, 3, '1');
+// f12.makeFinalState(f12.states[3]);
+// f12.makeFinalState(f12.states[4]);
 
 
-f12.createTransition(4, 4, '0');
-f12.createTransition(4, 5, '1');
+// f12.createTransition(0, 1, '0');
+// f12.createTransition(0, 2, '1');
 
-f12.createTransition(5, 5, '0');
-f12.createTransition(5, 5, '1');
+// f12.createTransition(1, 0, '0');
+// f12.createTransition(1, 3, '1');
 
-console.log(f12.states[2]);
-console.log(f12.states[3]);
-console.log(f12.states[5]);
-// f12.deleteTransitionToState(5);
-console.log(f12.states[2]);
-console.log(f12.states[3]);
-console.log(f12.states[5]);
+// f12.createTransition(2, 4, '0');
+// f12.createTransition(2, 5, '1');
+
+// f12.createTransition(3, 4, '0');
+// f12.createTransition(3, 5, '1');
+// // f12.createTransition(3, 3, '1');
+
+
+// f12.createTransition(4, 4, '0');
+// f12.createTransition(4, 5, '1');
+
+// f12.createTransition(5, 5, '0');
+// f12.createTransition(5, 5, '1');
+
+// f12.getType();
+
+
+// console.log(f12.states[2]);
+// console.log(f12.states[3]);
+// console.log(f12.states[5]);
+// console.log(f12.states[2]);
+// console.log(f12.states[3]);
+// console.log(f12.states[5]);
 
 // console.log(f12.states[5]);
 // console.log(f12.states[4]);
@@ -1035,7 +1037,6 @@ console.log(f12.states[5]);
 // console.log(f12.states[5]);
 // console.log(f12.states[4]);
 
-f12.getType();
 
 // f12.checkStr("01") // accept
 // f12.checkStr("0100") // accept
@@ -1046,12 +1047,12 @@ f12.getType();
 
 
 
-let f12Min = f12.getMinimizedDFA();
-console.log(f12Min.states.length);
+// let f12Min = f12.getMinimizedDFA();
+// console.log(f12Min.states.length);
 
-f12Min.checkStr("01") // accept
-f12Min.checkStr("0100") // accept
+// f12Min.checkStr("01") // accept
+// f12Min.checkStr("0100") // accept
 
-f12Min.checkStr("01101") // reject
-f12Min.checkStr("01001") // reject
+// f12Min.checkStr("01101") // reject
+// f12Min.checkStr("01001") // reject
 

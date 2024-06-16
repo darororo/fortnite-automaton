@@ -53,7 +53,6 @@ function setup() {
     canvasParent.offsetHeight
   );
   mycanvas.parent("canvasParent");
-
   windowResized();
 }
 
@@ -92,12 +91,17 @@ let boxList = [];
 let lines = [];
 let currentLine = null;
 
+// renderFA(f1);
+
 function draw() {
   background(255);
   for (let i = 0; i < boxList.length; i++) {
     boxList[i].update();
     boxList[i].over();
     boxList[i].show();
+    // boxList[i].checkbox.changed(() => {
+    //   updateFinalStates(boxList[i]);
+    // })
   }
   for (let line of lines) {
     line.show();
@@ -106,6 +110,7 @@ function draw() {
     currentLine.update(mouseX, mouseY);
     currentLine.show();
   }
+
 }
 
 function openNewFrame(line) {
@@ -170,7 +175,6 @@ function CreateLineTransition(line) {
   if(char == 'ε') char = '';
   console.log("From ", fromIndex, " to ", destIndex, " on ", char);
   fa.createTransition(fromIndex, destIndex, char);
-  fa.makeFinalState(fa.states[0])
 }
 
 testStringBtn.addEventListener('click', function(){
@@ -194,6 +198,28 @@ getTypeBtn.addEventListener('click', function(){
     showFAType();
   }    
 })
+
+// Handle double-clicked event
+function doubleClicked() {
+  if (
+    mouseX >= 0 &&
+    mouseX <= canvasParent.offsetWidth &&
+    mouseY >= 0 &&
+    mouseY <= canvasParent.offsetHeight
+  ) {
+    // Check if the mouse position is within the canvas width and height
+    let box = new Draggable(mouseX, mouseY);
+    boxList.push(box);
+    box.pressed(); // Allow dragging immediately after creation
+    box.createState();
+
+    console.log("created");
+    console.log(mouseX);
+    console.log(mouseY);
+  } else {
+    console.log("not allowed");
+  }
+}
 
 function showFAType() {
   let NFAEle = document.querySelectorAll('.fa span')[0];
@@ -237,6 +263,16 @@ function setAlphabetFA() {
   alphabetResult.style.display = "inline";
   
   console.log(fa.alphabet);
+}
+
+
+function renderFA(faObject) {
+  let states = faObject.states;
+  for( let i = 0; i < states.length; i++) {
+    let box = new Draggable(200, 200);
+    boxList.push(box);
+    box.pressed(); // Allow dragging immediately after creation
+  }
 }
 
 function popupCanvas() {
