@@ -152,6 +152,18 @@ class Draggable {
       // Quit dragging
       this.dragging = false;
     }
+
+    lineCombine() {
+      let startLines = this.lines.filter((v, i) => {
+        if(v.startBox == this) {
+          console.log(i);
+          return v;
+        }
+      })
+
+      console.log(startLines);
+    }
+
   }
   
   
@@ -353,7 +365,7 @@ function completeLine() {
 
     if (mouseOverBox) {
       currentLine.complete(box);
-      lines.push(currentLine);
+      lineList.push(currentLine);
 
       currentLine = null;
       return;
@@ -387,6 +399,7 @@ function renderFA(faObject) {
     let change = 80;
     let box = new Draggable(200 * Math.floor(i/2), 200 + rate*change);
     boxList.push(box);
+    boxList[i].state = states[i];
     box.pressed(); // Allow dragging immediately after creation
   }
 
@@ -398,7 +411,7 @@ function renderFA(faObject) {
         let line = new Line(boxList[i]); 
         line.setLabel(char);
         line.complete(boxList[index]);
-        lines.push(line);
+        lineList.push(line);
       })
     }
     

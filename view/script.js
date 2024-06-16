@@ -22,7 +22,7 @@ resetbutton.addEventListener("click", function () {
 
   boxList = [];
   boxCounter = 0;
-  lines = [];
+  lineList = [];
   showFAType(); // reset color of type labels
   SuperFA = new FA();
 
@@ -66,9 +66,10 @@ function setup() {
   );
   mycanvas.parent("canvasParent");
   windowResized();
-
+  
+  renderFA(f3);
   // renderFA(f12);  //dfa
-  renderFA(f9);   //nfa
+  // renderFA(f9);   //nfa
 }
 
 // Adding resize function for responsiveness
@@ -103,7 +104,7 @@ function downloadJSON(content, filename) {
 }
 
 let boxList = [];
-let lines = [];
+let lineList = [];
 let currentLine = null;
 
 // renderFA(f1);
@@ -118,7 +119,7 @@ function draw() {
     //   updateFinalStates(boxList[i]);
     // })
   }
-  for (let line of lines) {
+  for (let line of lineList) {
     line.show();
   }
   if (currentLine) {
@@ -176,7 +177,7 @@ function openNewFrame(line) {
     closeButton.style.marginLeft = "10px";
     closeButton.onclick = () => {
       document.body.removeChild(frame);
-      lines.pop();
+      lineList.pop();
     };
     frame.appendChild(closeButton);
 

@@ -676,29 +676,29 @@ f1.createTransition(1, 1, "b");
 
 //NFA
 // console.log("F3")
-// let f3 = new FA();
+let f3 = new FA();
 
-// f3.alphabet = ["0", "1", "2"];
-// f3.createState();
-// f3.createState();
-// f3.createState();
-// f3.createState();
+f3.alphabet = ["0", "1", "2"];
+f3.createState();
+f3.createState();
+f3.createState();
+f3.createState();
 
-// f3.makeFinalState(f3.states[1]);
-// f3.makeFinalState(f3.states[3]);
+f3.makeFinalState(f3.states[1]);
+f3.makeFinalState(f3.states[3]);
 
-// f3.states[0].createTransition("0", f3.states[1]);
-// f3.states[0].createTransition("1", f3.states[2]);
-// f3.states[0].createTransition("", f3.states[3])
+f3.createTransition(0, 1, "0");
+f3.createTransition(0, 2 ,"1");
+f3.createTransition(0, 3, "");
 
 
-// f3.states[1].createTransition("0", f3.states[1]);
-// f3.states[1].createTransition("", f3.states[3]);
+f3.createTransition(1,1,"0");
+f3.createTransition(1,3,"");
 
-// f3.states[2].createTransition("0", f3.states[2]);
-// f3.states[2].createTransition("1", f3.states[2]);
+f3.createTransition(2,2,"0");
+f3.createTransition(1,2,"1");
 
-// f3.states[3].createTransition("", f3.states[2]);
+f3.createTransition(3,2,"");
 
 // console.log("f3 type: " );
 // f3.getType();
