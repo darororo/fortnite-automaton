@@ -14,6 +14,12 @@ const alphabetResult = document.getElementById("alphabet-result");
 
 // Empty boxlist array if user clicks reset
 resetbutton.addEventListener("click", function () {
+  console.log("clicked");
+
+  boxList.forEach(box => {
+    box.removeCheckbox();
+  });
+
   boxList = [];
   boxCounter = 0;
   lines = [];
@@ -28,6 +34,8 @@ resetbutton.addEventListener("click", function () {
   convertBtn.style.backgroundColor = "grey";
 
   alphabetResult.style.display = 'none';
+
+  document.getElementById("str-result").style.display = "none";
 });
 
 // Handle Alphabet Setup
@@ -177,7 +185,6 @@ testStringBtn.addEventListener('click', function(){
   document.getElementById("str-result").style.display = "inline";
 
 })
-
 
 getTypeBtn.addEventListener('click', function(){
   if(fa.states.length == 0) {

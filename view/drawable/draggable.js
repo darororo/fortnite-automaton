@@ -31,6 +31,15 @@ class Draggable {
       // Assign label based on box counter
       this.label = "S " + boxCounter;
       boxCounter++; // Increment box counter for the next box
+
+      //Adding checkbox to the rectangle
+      this.checkbox = createCheckbox();
+      this.checkbox.position(this.x + 260, this.y + 80);
+    }
+
+    // Called when user pressed reset
+    removeCheckbox(){
+      this.checkbox.remove();
     }
   
     // Create state based on FA.js algo
@@ -65,6 +74,9 @@ class Draggable {
         // Update small box position
         this.smallBoxX = this.x + this.w - this.smallBoxSize - 10;
         this.smallBoxY = this.y + (this.h - this.smallBoxSize) / 2;
+
+        //Update Checkbox position
+        this.checkbox.position(this.x + 260, this.y + 80);
   
         // Update positions of connected lines
         for (let line of this.lines) {
@@ -390,6 +402,12 @@ class Draggable {
       if (mouseOverBox) {
         currentLine.complete(box);
         lines.push(currentLine);
+
+        //Check if checkbox is ticked to make final state
+        if (box.checkbox.checked()) {
+          fa.makeFinalState(box.state);
+        }
+
         currentLine = null;
         return;
       }
