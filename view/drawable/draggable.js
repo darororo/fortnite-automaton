@@ -32,12 +32,12 @@ class Draggable {
       this.label = "S " + boxCounter;
       boxCounter++; // Increment box counter for the next box
 
-      //Adding checkbox to the rectangle
       this.checkbox = createCheckbox();
       this.checkbox.position(this.x + 260, this.y + 80);
       this.checkbox.changed(() => {
         updateFinalStates(this);
       }) 
+      
     }
 
     // Called when user pressed reset
@@ -47,8 +47,9 @@ class Draggable {
   
     // Create state based on FA.js algo
     createState() {
-      fa.createState();
-      this.state = fa.states[boxCounter-1];
+      SuperFA.createState();
+      this.state = SuperFA.states[boxCounter-1];
+      
     }
   
     over() {
@@ -372,14 +373,14 @@ function updateFinalStates(box) {
   //Check if checkbox is ticked to make final state
   console.log("updating final")
   if(box.checkbox.checked()) {
-    fa.makeFinalState(box.state);
+    SuperFA.makeFinalState(box.state);
     console.log(box.state);
     console.log(box.checkbox.checked())
     console.log("making final")
   } else {
-    fa.deleteFinalState(box.state);
+    SuperFA.deleteFinalState(box.state);
     console.log("deleting final")
   }
-  console.log(fa.finalStates)
+  console.log(SuperFA.finalStates)
   
 }

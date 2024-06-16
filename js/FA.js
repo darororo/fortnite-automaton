@@ -88,6 +88,12 @@ class FA {
         this.finalStates.splice(index, 1);
     }
 
+    isFinalState(state) {
+        if(this.finalStates.includes(state)) return true;
+
+        return false;
+    }
+
     determineType() {
 
         for(let i = 0; i < this.states.length; i++) {
@@ -628,10 +634,7 @@ f1.alphabet = ["a", "b", "c"];
 f1.createState();
 f1.createState();
 
-f1.states[0].createTransition("a", f1.states[1]);
-f1.states[0].createTransition("b", f1.states[1]);
-f1.states[1].createTransition("a", f1.states[1]);
-f1.states[1].createTransition("b", f1.states[1]);
+f1.makeFinalState(f1.states[1]);
 
 f1.createTransition(0, 1, "a");
 f1.createTransition(0, 1, "b");

@@ -25,7 +25,6 @@ resetbutton.addEventListener("click", function () {
   lines = [];
   showFAType(); // reset color of type labels
   SuperFA = new FA();
-  SuperFA.alphabet = ["a", "b"];
 
   minimizeBtnn.disabled = true;
   minimizeBtnn.style.backgroundColor = "grey";
@@ -56,7 +55,6 @@ function setup() {
   windowResized();
 
   renderFA(f1);
-
 }
 
 // Adding resize function for responsiveness
@@ -113,6 +111,8 @@ function draw() {
     currentLine.update(mouseX, mouseY);
     currentLine.show();
   }
+
+  // console.log(boxList[0].checkbox)
 
 }
 
@@ -286,12 +286,18 @@ function renderFA(faObject) {
     let transitions = states[i].allTransitionsIndex;
     for(let [char, destIndexes] of Object.entries(transitions)) {
       destIndexes.forEach(index => {
-        let line = new Line(boxList[i]);
+        let line = new Line(boxList[i]); 
         line.setLabel(char);
         line.complete(boxList[index]);
         lines.push(line);
       })
     }
+    
+    // if the current state is a final state, check its checkbox
+    if(faObject.isFinalState(states[i])) {
+      boxList[i].checkbox.elt.childNodes[0].childNodes[0].checked = true;
+    }
+
   }
 
   SuperFA = faObject;
