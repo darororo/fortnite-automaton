@@ -179,7 +179,13 @@ class Line {
         this.startX = this.startBox.x + this.startBox.w / 2 - 20;
         this.startY = this.startBox.y;
       } else {
-        if(aboveEndbox) {
+        if(aboveEndbox && rightOfEndbox) {
+          this.startX = this.startBox.x;
+          this.startY = this.startBox.y + this.startBox.h / 2;
+        } else if(aboveEndbox && leftOfEndbox) {
+          this.startX = this.startBox.x + this.startBox.w;
+          this.startY = this.startBox.y + this.startBox.h / 2;
+        } else if(aboveEndbox) {
           this.startX = this.startBox.x + this.startBox.w / 2;
           this.startY = this.startBox.y + this.startBox.h;
         } else if(underEndbox && rightOfEndbox) {
@@ -193,8 +199,6 @@ class Line {
           this.startY = this.startBox.y;
         }
       }
-
-      
 
     } else {
       this.startX = this.startBox.smallBoxX + this.startBox.smallBoxSize / 2;
@@ -215,7 +219,13 @@ class Line {
         this.endX = this.startBox.x + this.startBox.w / 2 + 20;
         this.endY = this.startBox.y;
       } else {
-        if(aboveEndbox) {
+        if(aboveEndbox && rightOfEndbox) {
+          this.endX = this.endBox.x + this.endBox.w;
+          this.endY = this.endBox.y + this.endBox.h/2;
+        } else if(aboveEndbox && leftOfEndbox) {
+          this.endX = this.endBox.x;
+          this.endY = this.endBox.y + this.endBox.h/2;
+        } else if(aboveEndbox) {
           this.endX = this.endBox.x + this.endBox.w/2;
           this.endY = this.endBox.y;
         } else if(rightOfEndbox && underEndbox) {
