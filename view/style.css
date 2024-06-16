@@ -204,10 +204,6 @@ aside h3{
     top: 80%;
 }
 
-.fa_type {
-    cursor: pointer;
-}
-
 #acc_input{
     border: none;
     resize: none;

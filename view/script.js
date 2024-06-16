@@ -5,7 +5,7 @@ let SuperFA = new FA();
 //get button elements from html
 const resetbutton = document.getElementById("reset");
 const getTypeBtn = document.getElementById("testfa");
-const minimizeBtnn = document.getElementById("minimize");
+const minimizeBtn = document.getElementById("minimize");
 const convertBtn = document.getElementById("convertNFA");
 const testStringInp = document.getElementById("textInput");
 const testStringBtn = document.getElementById("teststr");
@@ -26,8 +26,8 @@ resetbutton.addEventListener("click", function () {
   showFAType(); // reset color of type labels
   SuperFA = new FA();
 
-  minimizeBtnn.disabled = true;
-  minimizeBtnn.style.backgroundColor = "grey";
+  minimizeBtn.disabled = true;
+  minimizeBtn.style.backgroundColor = "grey";
   
   convertBtn.disabled = true;
   convertBtn.style.backgroundColor = "grey";
@@ -39,6 +39,19 @@ resetbutton.addEventListener("click", function () {
 
 // Handle Alphabet Setup
 alphabetInp.addEventListener("change", setAlphabetFA);
+
+minimizeBtn.onclick = () => {
+  let minDFA = SuperFA.getMinimizedDFA();
+  popupCanvas(minDFA)
+}
+
+convertBtn.onclick = () => {
+  let DFA = SuperFA.getNFAtoDFA();
+  popupCanvas(DFA)
+}
+
+minimizeBtn.disabled = true;
+convertBtn.disabled = true;
 
 
 // Set up canvas using p5js
@@ -54,7 +67,8 @@ function setup() {
   mycanvas.parent("canvasParent");
   windowResized();
 
-  renderFA(f1);
+  // renderFA(f12);  //dfa
+  renderFA(f9);   //nfa
 }
 
 // Adding resize function for responsiveness
@@ -240,14 +254,16 @@ function showFAType() {
     NFAEle.style.backgroundColor = "Green";
 
     convertBtn.disabled = false;
+    minimizeBtn.disabled = true;
     convertBtn.style.backgroundColor = "orange"
   } 
   if(SuperFA.type == TypeFA.DFA){
     DFAEle.style.backgroundColor = "Green";
     NFAEle.style.backgroundColor = "#9faec1";
 
-    minimizeBtnn.disabled = false;
-    minimizeBtnn.style.background = "orange"; 
+    minimizeBtn.disabled = false;
+    convertBtn.disabled = true;
+    minimizeBtn.style.background = "orange"; 
   }
   
 }
@@ -269,44 +285,13 @@ function setAlphabetFA() {
 }
 
 
-function renderFA(faObject) {
-  let states = faObject.states;
-  let rate = 1;
-
-  for(let i = 0; i < states.length; i++) {
-    rate *= -1;
-    let change = 80;
-    let box = new Draggable(200 * Math.floor(i/2), 200 + rate*change);
-    boxList.push(box);
-    box.pressed(); // Allow dragging immediately after creation
-  }
-
-  for(let i = 0; i < states.length; i++) {
-    console.log("state: ", i)
-    let transitions = states[i].allTransitionsIndex;
-    for(let [char, destIndexes] of Object.entries(transitions)) {
-      destIndexes.forEach(index => {
-        let line = new Line(boxList[i]); 
-        line.setLabel(char);
-        line.complete(boxList[index]);
-        lines.push(line);
-      })
-    }
-    
-    // if the current state is a final state, check its checkbox
-    if(faObject.isFinalState(states[i])) {
-      boxList[i].checkbox.elt.childNodes[0].childNodes[0].checked = true;
-    }
-
-  }
-
-  SuperFA = faObject;
-  alphabetResult.innerText = `[${SuperFA.alphabet}]`;
-  alphabetResult.style.display = "inline";
-}
-
-function popupCanvas() {
+function popupCanvas(faObject) {
   let win = window.open('popup/canvas.html', null, 'popup, width=800, height=600');
+  win.onload = () => {
+    win.postMessage({"FA" : faObject})
+  }
+  console.log("Sending")
+  console.log(faObject);
+  
 }
 
-// popupCanvas();

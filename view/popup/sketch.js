@@ -1,5 +1,8 @@
 let canvasParent;
 let boxCounter = 0;
+let SuperFA = new FA();
+let alphabetResult = null;
+
 
 
 function setup() {
@@ -11,6 +14,15 @@ function setup() {
       );
 
     mycanvas.parent("canvasParent");
+
+    window.addEventListener('message', (e) => {
+      console.log("RECEIVING")
+      console.log(e.data);
+      let newFA = e.data["FA"];
+      SuperFA.states = newFA.states;
+      SuperFA.finalStates = newFA.finalStates;
+      renderFA(SuperFA);
+    })    
 }
 
 function windowResized() {

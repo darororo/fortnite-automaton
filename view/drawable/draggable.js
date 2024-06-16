@@ -32,8 +32,8 @@ class Draggable {
       this.label = "S " + boxCounter;
       boxCounter++; // Increment box counter for the next box
 
-      this.checkbox = createCheckbox();
-      this.checkbox.position(this.x + 260, this.y + 80);
+      this.checkbox = createCheckbox("f");
+      this.checkbox.position(this.x + canvasParent.offsetLeft, this.y + canvasParent.offsetTop);
       this.checkbox.changed(() => {
         updateFinalStates(this);
       }) 
@@ -81,7 +81,7 @@ class Draggable {
         this.smallBoxY = this.y + (this.h - this.smallBoxSize) / 2;
 
         //Update Checkbox position
-        this.checkbox.position(this.x + 260, this.y + 80);
+        this.checkbox.position(this.x + canvasParent.offsetLeft, this.y + canvasParent.offsetTop);
   
         // Update positions of connected lines
         for (let line of this.lines) {
@@ -241,13 +241,6 @@ class Line {
         }  
       }
 
-      
-
-
-      // this.endX = this.endBox.smallBoxX + this.endBox.smallBoxSize / 2;
-      // this.endY = this.endBox.smallBoxY + this.endBox.smallBoxSize / 2;
-      // this.endX = this.endBox.x;
-      // this.endY = this.endBox.y + this.endBox.h/2;
     } else {
       this.endX = x;
       this.endY = y;
@@ -383,4 +376,42 @@ function updateFinalStates(box) {
   }
   console.log(SuperFA.finalStates)
   
+}
+
+function renderFA(faObject) {
+  let states = faObject.states;
+  let rate = 1;
+
+  for(let i = 0; i < states.length; i++) {
+    rate *= -1;
+    let change = 80;
+    let box = new Draggable(200 * Math.floor(i/2), 200 + rate*change);
+    boxList.push(box);
+    box.pressed(); // Allow dragging immediately after creation
+  }
+
+  for(let i = 0; i < states.length; i++) {
+    console.log("state: ", i)
+    let transitions = states[i].allTransitionsIndex;
+    for(let [char, destIndexes] of Object.entries(transitions)) {
+      destIndexes.forEach(index => {
+        let line = new Line(boxList[i]); 
+        line.setLabel(char);
+        line.complete(boxList[index]);
+        lines.push(line);
+      })
+    }
+    
+    // if the current state is a final state, check its checkbox
+    if(faObject.isFinalState(states[i])) {
+      boxList[i].checkbox.elt.childNodes[0].childNodes[0].checked = true;
+    }
+
+  }
+
+  SuperFA = faObject;
+  if(alphabetResult) {
+    alphabetResult.innerText = `[${SuperFA.alphabet}]`;
+    alphabetResult.style.display = "inline";  
+  }
 }

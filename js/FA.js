@@ -341,8 +341,8 @@ class FA {
                     }
 
                     if(qiFound) {
-                        dfa.states[setIndex].createTransition(input, dfa.states[qiIndex]) // Current index of DFA state is the same as the current set index
-
+                        // dfa.states[setIndex].createTransition(input, dfa.states[qiIndex]) // Current index of DFA state is the same as the current set index
+                        dfa.createTransition(setIndex, qiIndex, input) // Current index of DFA state is the same as the current set index
                         this.finalStates.forEach(state => {
                             if(qi.includes(state)) {
                                 // if qi has any of the final states of the NFA
@@ -1049,21 +1049,23 @@ f12.createTransition(5, 5, '1');
 // console.log(f12.states[4]);
 
 
-// f12.checkStr("01") // accept
-// f12.checkStr("0100") // accept
+f12.checkStr("01") // accept
+f12.checkStr("0100") // accept
 
 
-// f12.checkStr("01101") // reject
-// f12.checkStr("01001") // reject
+f12.checkStr("01101") // reject
+f12.checkStr("01001") // reject
 
 
 
-// let f12Min = f12.getMinimizedDFA();
-// console.log(f12Min.states.length);
+let f12Min = f12.getMinimizedDFA();
+console.log(f12Min.states.length);
 
-// f12Min.checkStr("01") // accept
-// f12Min.checkStr("0100") // accept
+f12Min.checkStr("01") // accept
+f12Min.checkStr("0100") // accept
 
-// f12Min.checkStr("01101") // reject
-// f12Min.checkStr("01001") // reject
+f12Min.checkStr("01101") // reject
+f12Min.checkStr("01001") // reject
+
+f12Min.states.forEach(state => console.log(state))
 
