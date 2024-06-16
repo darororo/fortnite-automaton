@@ -160,7 +160,7 @@ class Line {
     this.startBox = startBox;
     this.endBox = null;
     this.controlOffset = 150;
-    this.label = ""; // Initialize label
+    this.label; // Initialize label
 
     // Initialize starting coordinates based on the current position of startBox
     this.updateStartCoordinates();
@@ -273,10 +273,11 @@ class Line {
     endBox.lines.push(this);
     
     // Open the new frame for the user to enter the label
-    openNewFrame(this);
+    if(this.label === undefined) openNewFrame(this);
   }
 
   setLabel(label) {
+    if(label == "") label = "ε";
     this.label = label;
   }
 

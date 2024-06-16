@@ -1,6 +1,6 @@
 let canvasParent;
 let boxCounter = 0;
-let fa = new FA();
+let SuperFA = new FA();
 
 //get button elements from html
 const resetbutton = document.getElementById("reset");
@@ -24,8 +24,8 @@ resetbutton.addEventListener("click", function () {
   boxCounter = 0;
   lines = [];
   showFAType(); // reset color of type labels
-  fa = new FA();
-  fa.alphabet = ["a", "b"];
+  SuperFA = new FA();
+  SuperFA.alphabet = ["a", "b"];
 
   minimizeBtnn.disabled = true;
   minimizeBtnn.style.backgroundColor = "grey";
@@ -54,6 +54,9 @@ function setup() {
   );
   mycanvas.parent("canvasParent");
   windowResized();
+
+  renderFA(f1);
+
 }
 
 // Adding resize function for responsiveness
@@ -70,7 +73,7 @@ window.addEventListener("resize", windowResized);
 
 
 document.getElementById("save").addEventListener("click", function () {
-  saveFAToJSON(fa);
+  saveFAToJSON(SuperFA);
 });
 
 function saveFAToJSON(fa) {
@@ -174,14 +177,14 @@ function CreateLineTransition(line) {
   let destIndex = boxList.indexOf(line.endBox);
   if(char == 'ε') char = '';
   console.log("From ", fromIndex, " to ", destIndex, " on ", char);
-  fa.createTransition(fromIndex, destIndex, char);
+  SuperFA.createTransition(fromIndex, destIndex, char);
 }
 
 testStringBtn.addEventListener('click', function(){
   console.log(testStringInp.value);
-  fa.checkStr(testStringInp.value);
+  SuperFA.checkStr(testStringInp.value);
 
-  if(fa.output == 0){
+  if(SuperFA.output == 0){
     document.getElementById("str-result").innerText = "Reject";
   }else{
     document.getElementById("str-result").innerText = "Accept";
@@ -191,10 +194,10 @@ testStringBtn.addEventListener('click', function(){
 })
 
 getTypeBtn.addEventListener('click', function(){
-  if(fa.states.length == 0) {
+  if(SuperFA.states.length == 0) {
     alert("oh may gah")
   } else {
-    fa.determineType();
+    SuperFA.determineType();
     showFAType();
   }    
 })
@@ -232,14 +235,14 @@ function showFAType() {
     return;
   }
 
-  if(fa.type == TypeFA.NFA) {
+  if(SuperFA.type == TypeFA.NFA) {
     DFAEle.style.backgroundColor = "#9faec1";
     NFAEle.style.backgroundColor = "Green";
 
     convertBtn.disabled = false;
     convertBtn.style.backgroundColor = "orange"
   } 
-  if(fa.type == TypeFA.DFA){
+  if(SuperFA.type == TypeFA.DFA){
     DFAEle.style.backgroundColor = "Green";
     NFAEle.style.backgroundColor = "#9faec1";
 
@@ -258,8 +261,8 @@ function setAlphabetFA() {
   let alphabetSet = Array.from(chars);
   alphabetSet = alphabetSet.filter(char => char.length == 1); 
   
-  fa.alphabet = alphabetSet; 
-  alphabetResult.innerText = `[${fa.alphabet}]`;
+  SuperFA.alphabet = alphabetSet; 
+  alphabetResult.innerText = `[${SuperFA.alphabet}]`;
   alphabetResult.style.display = "inline";
   
   console.log(fa.alphabet);
@@ -268,11 +271,32 @@ function setAlphabetFA() {
 
 function renderFA(faObject) {
   let states = faObject.states;
-  for( let i = 0; i < states.length; i++) {
-    let box = new Draggable(200, 200);
+  let rate = 1;
+
+  for(let i = 0; i < states.length; i++) {
+    rate *= -1;
+    let change = 80;
+    let box = new Draggable(200 * Math.floor(i/2), 200 + rate*change);
     boxList.push(box);
     box.pressed(); // Allow dragging immediately after creation
   }
+
+  for(let i = 0; i < states.length; i++) {
+    console.log("state: ", i)
+    let transitions = states[i].allTransitionsIndex;
+    for(let [char, destIndexes] of Object.entries(transitions)) {
+      destIndexes.forEach(index => {
+        let line = new Line(boxList[i]);
+        line.setLabel(char);
+        line.complete(boxList[index]);
+        lines.push(line);
+      })
+    }
+  }
+
+  SuperFA = faObject;
+  alphabetResult.innerText = `[${SuperFA.alphabet}]`;
+  alphabetResult.style.display = "inline";
 }
 
 function popupCanvas() {

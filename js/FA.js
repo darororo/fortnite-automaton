@@ -548,6 +548,7 @@ class State {
     allTransitions = {}; 
     allTransitionsIndex = {};
 
+    // Deprecated; Call this function from a FA object
     createTransition(str, nextState) {
         // if there is no trasition for the current alphabet yet,  
         // initialize an array to store possible transitions
@@ -620,17 +621,24 @@ class State {
 }
 
 // test
-// let f1 = new FA();
-// console.log(TypeFA.DFA);
+let f1 = new FA();
+console.log(TypeFA.DFA);
 
-// f1.alphabet = ["a", "b", "c"];
-// f1.createState();
-// f1.createState();
+f1.alphabet = ["a", "b", "c"];
+f1.createState();
+f1.createState();
 
-// f1.states[0].createTransition("a", f1.states[1]);
-// f1.states[0].createTransition("b", f1.states[1]);
-// f1.states[1].createTransition("a", f1.states[1]);
-// f1.states[1].createTransition("b", f1.states[1]);
+f1.states[0].createTransition("a", f1.states[1]);
+f1.states[0].createTransition("b", f1.states[1]);
+f1.states[1].createTransition("a", f1.states[1]);
+f1.states[1].createTransition("b", f1.states[1]);
+
+f1.createTransition(0, 1, "a");
+f1.createTransition(0, 1, "b");
+
+f1.createTransition(1, 1, "a");
+f1.createTransition(1, 1, "b");
+
 
 // console.log("f1 type: " );
 // f1.getType();
@@ -870,32 +878,32 @@ class State {
 
 // Chapter 5 homework NFA To DFA 3
 
-// let f9 = new FA();
-// f9.alphabet = ["a", "b"];
+let f9 = new FA();
+f9.alphabet = ["a", "b"];
 
-// for(let i = 0; i < 6; i++) f9.createState();
+for(let i = 0; i < 6; i++) f9.createState();
 
-// f9.makeFinalState(f9.states[3]);
+f9.makeFinalState(f9.states[3]);
 
-// // f9.states[0].createTransition("b", f9.states[1]);
+// f9.states[0].createTransition("b", f9.states[1]);
 
-// f9.createTransition(0, 1, "b"); // new wrapper function
+f9.createTransition(0, 1, "b"); // new wrapper function
 
-// f9.createTransition(1, 2, "a"); 
-// f9.createTransition(1, 5, "b"); 
-// f9.createTransition(1, 2, ""); 
+f9.createTransition(1, 2, "a"); 
+f9.createTransition(1, 5, "b"); 
+f9.createTransition(1, 2, ""); 
 
-// f9.createTransition(2, 1, "b"); 
-// f9.createTransition(2, 3, "b"); 
+f9.createTransition(2, 1, "b"); 
+f9.createTransition(2, 3, "b"); 
 
-// f9.createTransition(3, 4, "a"); 
+f9.createTransition(3, 4, "a"); 
 
-// f9.createTransition(4, 3, ""); 
-// f9.createTransition(4, 2, "b"); 
-// f9.createTransition(4, 5, "a"); 
+f9.createTransition(4, 3, ""); 
+f9.createTransition(4, 2, "b"); 
+f9.createTransition(4, 5, "a"); 
 
-// f9.createTransition(5, 2, ""); 
-// f9.createTransition(5, 3, "a"); 
+f9.createTransition(5, 2, ""); 
+f9.createTransition(5, 3, "a"); 
 
 
 // console.log(f9);
@@ -992,34 +1000,34 @@ class State {
 // f11Min.checkStr("011");    // FUCK NO
 // f11Min.checkStr("010");    // FUCK NO
 
-// let f12 = new FA();
-// f12.alphabet = ['0', '1'];
+let f12 = new FA();
+f12.alphabet = ['0', '1'];
 
-// for(let i = 0; i < 6; i++) f12.createState();
+for(let i = 0; i < 6; i++) f12.createState();
 
-// f12.makeFinalState(f12.states[3]);
-// f12.makeFinalState(f12.states[4]);
-
-
-// f12.createTransition(0, 1, '0');
-// f12.createTransition(0, 2, '1');
-
-// f12.createTransition(1, 0, '0');
-// f12.createTransition(1, 3, '1');
-
-// f12.createTransition(2, 4, '0');
-// f12.createTransition(2, 5, '1');
-
-// f12.createTransition(3, 4, '0');
-// f12.createTransition(3, 5, '1');
-// // f12.createTransition(3, 3, '1');
+f12.makeFinalState(f12.states[3]);
+f12.makeFinalState(f12.states[4]);
 
 
-// f12.createTransition(4, 4, '0');
-// f12.createTransition(4, 5, '1');
+f12.createTransition(0, 1, '0');
+f12.createTransition(0, 2, '1');
 
-// f12.createTransition(5, 5, '0');
-// f12.createTransition(5, 5, '1');
+f12.createTransition(1, 0, '0');
+f12.createTransition(1, 3, '1');
+
+f12.createTransition(2, 4, '0');
+f12.createTransition(2, 5, '1');
+
+f12.createTransition(3, 4, '0');
+f12.createTransition(3, 5, '1');
+// f12.createTransition(3, 3, '1');
+
+
+f12.createTransition(4, 4, '0');
+f12.createTransition(4, 5, '1');
+
+f12.createTransition(5, 5, '0');
+f12.createTransition(5, 5, '1');
 
 // f12.getType();
 
