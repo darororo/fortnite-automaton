@@ -19,6 +19,9 @@ class Draggable {
   
       // Array to keep track of lines connected to this box
       this.lines = [];
+      this.totalStartLines = 0;
+      this.totalEndLines = 0;
+      this.totalSameTrans = 0;
   
       // Store initial mouse position
       this.initialMouseX = 0;
@@ -125,8 +128,9 @@ class Draggable {
         this.smallBoxSize,
         5
       );
-      pop();
+      textFont("Comic Sans");
       text("δ", this.smallBoxX + this.smallBoxSize/2, this.smallBoxY - 5)
+      pop();
     }
   
     pressed() {
@@ -161,17 +165,6 @@ class Draggable {
       this.dragging = false;
     }
 
-    lineCombine() {
-      let startLines = this.lines.filter((v, i) => {
-        if(v.startBox == this) {
-          console.log(i);
-          return v;
-        }
-      })
-
-      console.log(startLines);
-    }
-
   }
   
   
@@ -189,6 +182,10 @@ class Line {
   }
 
   updateStartCoordinates() {
+    // Offset of where this line ends on the starting box
+    let offSetPosX  = this.startIndex * 15;
+    let offSetPosY  = this.startIndex * 5;
+    if(this.startIndex % 2 == 1) offSetPosY *= -1;
 
     if(this.endBox) {
       let aboveEndbox = this.startBox.y + this.startBox.h < this.endBox.y;
@@ -203,21 +200,33 @@ class Line {
         if(aboveEndbox && rightOfEndbox) {
           this.startX = this.startBox.x;
           this.startY = this.startBox.y + this.startBox.h / 2;
+          
+          this.startY += offSetPosY;
         } else if(aboveEndbox && leftOfEndbox) {
           this.startX = this.startBox.x + this.startBox.w;
           this.startY = this.startBox.y + this.startBox.h / 2;
+
+          this.startY += offSetPosY;
         } else if(aboveEndbox) {
           this.startX = this.startBox.x + this.startBox.w / 2;
           this.startY = this.startBox.y + this.startBox.h;
+
+          this.startX += offSetPosX;
         } else if(underEndbox && rightOfEndbox) {
           this.startX = this.startBox.x;
           this.startY = this.startBox.y + this.startBox.h / 2;
+
+          this.startY += offSetPosY;
         } else if(underEndbox && leftOfEndbox) {
           this.startX = this.startBox.x + this.startBox.w;
           this.startY = this.startBox.y + this.startBox.h / 2;
+
+          this.startY += offSetPosY;
         } else if(underEndbox) {
           this.startX = this.startBox.x + this.startBox.w/2;
           this.startY = this.startBox.y;
+
+          this.startX += offSetPosX;
         }
       }
 
@@ -229,6 +238,10 @@ class Line {
   }
 
   update(x, y) {
+    // Offset of where this line ends on the ending box
+    let offSetPosX  = this.endIndex * 15;
+    let offSetPosY  = this.endIndex * 10;
+    if(this.endIndex % 2 == 1) offSetPosY *= -1;
 
     if(this.endBox) { 
       let aboveEndbox = this.startBox.y + this.startBox.h < this.endBox.y;
@@ -239,25 +252,38 @@ class Line {
       if(this.endBox == this.startBox) { // Self transition
         this.endX = this.startBox.x + this.startBox.w / 2 + 20;
         this.endY = this.startBox.y;
+
       } else {
         if(aboveEndbox && rightOfEndbox) {
           this.endX = this.endBox.x + this.endBox.w;
           this.endY = this.endBox.y + this.endBox.h/2;
+
+          this.endY += offSetPosY;
         } else if(aboveEndbox && leftOfEndbox) {
           this.endX = this.endBox.x;
           this.endY = this.endBox.y + this.endBox.h/2;
+
+          this.endY += offSetPosY;
         } else if(aboveEndbox) {
           this.endX = this.endBox.x + this.endBox.w/2;
           this.endY = this.endBox.y;
+
+          this.endX += offSetPosX;
         } else if(rightOfEndbox && underEndbox) {
           this.endX = this.endBox.x + this.endBox.w;
           this.endY = this.endBox.y + this.endBox.h/2;
+
+          this.endY += offSetPosY;
         } else if(leftOfEndbox && underEndbox) {
           this.endX = this.endBox.x;
           this.endY = this.endBox.y + this.endBox.h/2;
+
+          this.endY += offSetPosY;
         } else if(underEndbox) {
           this.endX = this.endBox.x + this.endBox.w/2;
           this.endY = this.endBox.y + this.endBox.h;
+
+          this.endX += offSetPosX;
         }  
       }
 
@@ -271,20 +297,33 @@ class Line {
 
   complete(endBox) {
     this.endBox = endBox;
-
+    
     if(this.endBox == this.startBox)  {
       this.startX = endBox.x + endBox.w / 2 - 20.
       this.startY = endBox.y;
       this.endX = endBox.x + endBox.w / 2 + 20;
       this.endY = endBox.y;
     } else {
-      // this.endX = endBox.smallBoxX + endBox.smallBoxSize / 2;
-      // this.endY = endBox.smallBoxY + endBox.smallBoxSize / 2;
       this.endX = endBox.x;
       this.endY = endBox.y + endBox.h/2;
     }
 
     endBox.lines.push(this);
+
+    // Starting and ending position of this line on its connected boxes
+    this.startIndex = this.startBox.totalStartLines;
+    this.endIndex = this.endBox.totalEndLines;
+
+    this.startBox.totalStartLines++;
+    this.endBox.totalEndLines++;
+
+    this.sameTransIndex = this.startBox.totalSameTrans;
+
+    if(this.startBox == this.endBox) {
+      this.startBox.totalSameTrans++;
+    }
+
+    
     
     // Open the new frame for the user to enter the label
     if(this.label === undefined) openNewFrame(this);
@@ -301,9 +340,9 @@ class Line {
     noFill();
     beginShape();
     vertex(this.startX, this.startY);
-    let bezier;
+    // let bezier;
     if(this.startBox == this.endBox) {
-      bezier = bezierVertex(
+      this.bezier = bezierVertex(
         // this.startX + this.controlOffset,
         this.startX - 20,
         this.startY - 60,
@@ -314,9 +353,9 @@ class Line {
         this.endY
       );
     } else {
-      bezier = bezierVertex(
+      this.bezier = bezierVertex(
         // this.startX + this.controlOffset,
-        this.startX,
+        this.endX,
         this.startY,
         // this.endX - this.controlOffset,
         this.startX,
@@ -330,7 +369,7 @@ class Line {
 
     // Draw arrowhead
     let angle = atan2(this.endY - this.startY, this.endX - this.startX);
-    let arrowSize = 10;
+    let arrowSize = 6;
     let x1 = this.endX - arrowSize * cos(angle - QUARTER_PI);
     let y1 = this.endY - arrowSize * sin(angle - QUARTER_PI);
     let x2 = this.endX - arrowSize * cos(angle + QUARTER_PI);
@@ -340,15 +379,31 @@ class Line {
     triangle(this.endX, this.endY, x1, y1, x2, y2);
 
     // Display the label
-    if (this.label) {
+    if(this.label) {
+      push()
       noStroke();
       fill(0);
-      textAlign(CENTER, CENTER);
-      text(
-        this.label,
-        (this.startX + this.endX) / 2 ,
-        (this.startY + this.endY) / 2 - 50      
-      );
+      textAlign(CENTER);
+      fill(255);
+      stroke(0);
+      strokeWeight(4);
+
+      if(this.startBox == this.endBox) {
+        let offSetPosX = this.sameTransIndex * 10;
+        console.log("same tran offset: ", offSetPosX)
+        text(
+          this.label,
+          (this.startX + this.endX) / 2 + offSetPosX,
+          (this.startY + this.endY) / 2 - 50,
+        );
+      } else {
+        text(
+          this.label,
+          (this.startX + this.endX) / 2 ,
+          (this.startY + this.endY) / 2,
+        );
+      }
+      pop();
     }
   }
 }
@@ -435,9 +490,10 @@ function CreateLineTransition(line) {
   let char = line.label;
   let fromIndex = boxList.indexOf(line.startBox);
   let destIndex = boxList.indexOf(line.endBox);
+  SuperFA.createTransition(fromIndex, destIndex, char);
   if(char == 'ε') char = '';
   console.log("From ", fromIndex, " to ", destIndex, " on ", char);
-  SuperFA.createTransition(fromIndex, destIndex, char);
+  
 }
 
 function updateFinalStates(box) {
