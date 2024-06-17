@@ -33,7 +33,7 @@ class Draggable {
       boxCounter++; // Increment box counter for the next box
 
       this.checkbox = createCheckbox("f");
-      this.checkbox.position(this.x + canvasParent.offsetLeft, this.y + canvasParent.offsetTop);
+      this.checkbox.position(this.x + canvasParent.offsetLeft, this.y + canvasParent.offsetTop + 10 );
       this.checkbox.changed(() => {
         updateFinalStates(this);
       }) 
@@ -81,7 +81,7 @@ class Draggable {
         this.smallBoxY = this.y + (this.h - this.smallBoxSize) / 2;
 
         //Update Checkbox position
-        this.checkbox.position(this.x + canvasParent.offsetLeft, this.y + canvasParent.offsetTop);
+        this.checkbox.position(this.x + canvasParent.offsetLeft, this.y + canvasParent.offsetTop + 10);
   
         // Update positions of connected lines
         for (let line of this.lines) {
@@ -111,7 +111,8 @@ class Draggable {
       text(this.label, this.x + this.w / 2, this.y + this.h / 2);
   
       // Draw small box
-      fill(0, 0, 0);
+      push();
+      fill(60, 60, 60);
       rect(
         this.smallBoxX,
         this.smallBoxY,
@@ -119,6 +120,8 @@ class Draggable {
         this.smallBoxSize,
         5
       );
+      pop();
+      text("δ", this.smallBoxX + this.smallBoxSize/2, this.smallBoxY - 5)
     }
   
     pressed() {
@@ -293,8 +296,9 @@ class Line {
     noFill();
     beginShape();
     vertex(this.startX, this.startY);
+    let bezier;
     if(this.startBox == this.endBox) {
-      bezierVertex(
+      bezier = bezierVertex(
         // this.startX + this.controlOffset,
         this.startX - 20,
         this.startY - 60,
@@ -305,7 +309,7 @@ class Line {
         this.endY
       );
     } else {
-      bezierVertex(
+      bezier = bezierVertex(
         // this.startX + this.controlOffset,
         this.startX,
         this.startY,
@@ -338,7 +342,7 @@ class Line {
       text(
         this.label,
         (this.startX + this.endX) / 2 ,
-        (this.startY + this.endY) / 2 
+        (this.startY + this.endY) / 2       
       );
     }
   }
@@ -366,6 +370,71 @@ function completeLine() {
     }
   }
 }
+
+function openNewFrame(line) {
+  // Create a new frame
+  let frame = document.createElement("div");
+  frame.style.position = "fixed";
+  frame.style.left = "50%";
+  frame.style.top = "50%";
+  frame.style.transform = "translate(-50%, -50%)";
+  frame.style.width = "400px";
+  frame.style.height = "300px";
+  frame.style.backgroundColor = "white";
+  frame.style.border = "2px solid black";
+  frame.style.zIndex = "1000";
+  frame.style.padding = "20px";
+  frame.style.boxShadow = "0 0 10px rgba(0, 0, 0, 0.5)";
+
+  // Add content to the frame
+  frame.innerHTML = `
+    <h2>Label Your Transition</h2>
+    <span>Transition: </span>
+    <input type = "text" id = "transitName">
+    <br></br> 
+  `;
+
+  // Add a save button
+  let saveButton = document.createElement("button");
+  saveButton.innerText = "Save";
+  saveButton.onclick = () => {
+    let inputValue = document.getElementById("transitName").value;
+    if(inputValue == "") {
+      line.setLabel("ε");
+    } else {
+      line.setLabel(inputValue);
+    }
+    document.body.removeChild(frame);
+
+    CreateLineTransition(line);  
+    console.log(line.label);
+  };
+  frame.appendChild(saveButton);
+
+    // Add a close button
+    let closeButton = document.createElement("button");
+    closeButton.innerText = "Close";
+    closeButton.style.marginLeft = "10px";
+    closeButton.onclick = () => {
+      document.body.removeChild(frame);
+      lineList.pop();
+    };
+    frame.appendChild(closeButton);
+
+    // Append the frame to the body
+    document.body.appendChild(frame);  
+}
+
+// Create Transition between 2 states connected by a line
+function CreateLineTransition(line) {
+  let char = line.label;
+  let fromIndex = boxList.indexOf(line.startBox);
+  let destIndex = boxList.indexOf(line.endBox);
+  if(char == 'ε') char = '';
+  console.log("From ", fromIndex, " to ", destIndex, " on ", char);
+  SuperFA.createTransition(fromIndex, destIndex, char);
+}
+
 
 
 function updateFinalStates(box) {

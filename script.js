@@ -131,69 +131,7 @@ function draw() {
 
 }
 
-function openNewFrame(line) {
-  // Create a new frame
-  let frame = document.createElement("div");
-  frame.style.position = "fixed";
-  frame.style.left = "50%";
-  frame.style.top = "50%";
-  frame.style.transform = "translate(-50%, -50%)";
-  frame.style.width = "400px";
-  frame.style.height = "300px";
-  frame.style.backgroundColor = "white";
-  frame.style.border = "2px solid black";
-  frame.style.zIndex = "1000";
-  frame.style.padding = "20px";
-  frame.style.boxShadow = "0 0 10px rgba(0, 0, 0, 0.5)";
 
-  // Add content to the frame
-  frame.innerHTML = `
-    <h2>Label Your Transition</h2>
-    <span>Transition: </span>
-    <input type = "text" id = "transitName">
-    <br></br> 
-  `;
-
-  // Add a save button
-  let saveButton = document.createElement("button");
-  saveButton.innerText = "Save";
-  saveButton.onclick = () => {
-    let inputValue = document.getElementById("transitName").value;
-    if(inputValue == "") {
-      line.setLabel("ε");
-    } else {
-      line.setLabel(inputValue);
-    }
-    document.body.removeChild(frame);
-
-    CreateLineTransition(line);  
-    console.log(line.label);
-  };
-  frame.appendChild(saveButton);
-
-    // Add a close button
-    let closeButton = document.createElement("button");
-    closeButton.innerText = "Close";
-    closeButton.style.marginLeft = "10px";
-    closeButton.onclick = () => {
-      document.body.removeChild(frame);
-      lineList.pop();
-    };
-    frame.appendChild(closeButton);
-
-    // Append the frame to the body
-    document.body.appendChild(frame);  
-}
-
-// Create Transition between 2 states connected by a line
-function CreateLineTransition(line) {
-  let char = line.label;
-  let fromIndex = boxList.indexOf(line.startBox);
-  let destIndex = boxList.indexOf(line.endBox);
-  if(char == 'ε') char = '';
-  console.log("From ", fromIndex, " to ", destIndex, " on ", char);
-  SuperFA.createTransition(fromIndex, destIndex, char);
-}
 
 testStringBtn.addEventListener('click', function(){
   console.log(testStringInp.value);
