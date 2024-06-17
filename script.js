@@ -238,3 +238,25 @@ function popupCanvas(faObject) {
   
 }
 
+function acceptdata(){
+  const getAccept = document.getElementById('acc_input').value;
+  const acceptValue = getAccept.split('/n');
+  
+  console.log(acceptValue);
+}
+
+function rejectdata(){
+  const getReject = document.getElementById('rej_input').value;
+  const rejectValue = getReject.split('\n');
+  
+  console.log(rejectValue);
+}
+
+document.getElementById("bulk").addEventListener("click", function(){
+  const getAccept = document.getElementById('acc_input').value;
+  const acceptValue = getAccept.split('/n');
+  const getReject = document.getElementById('rej_input').value;
+  const rejectValue = getReject.split('\n');
+
+  
+})
