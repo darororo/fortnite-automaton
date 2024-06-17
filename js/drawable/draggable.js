@@ -33,7 +33,11 @@ class Draggable {
       boxCounter++; // Increment box counter for the next box
 
       this.checkbox = createCheckbox("f");
-      this.checkbox.position(this.x + canvasParent.offsetLeft, this.y + canvasParent.offsetTop + 10 );
+
+      //Assign Checkbox Position
+      let cHeight = this.checkbox.elt.childNodes[0].childNodes[0].clientHeight;
+      this.checkbox.position(this.x + canvasParent.offsetLeft, this.y + canvasParent.offsetTop + cHeight );
+      
       this.checkbox.changed(() => {
         updateFinalStates(this);
       }) 
@@ -81,7 +85,8 @@ class Draggable {
         this.smallBoxY = this.y + (this.h - this.smallBoxSize) / 2;
 
         //Update Checkbox position
-        this.checkbox.position(this.x + canvasParent.offsetLeft, this.y + canvasParent.offsetTop + 10);
+        let cHeight = this.checkbox.elt.childNodes[0].childNodes[0].clientHeight;
+        this.checkbox.position(this.x + canvasParent.offsetLeft, this.y + canvasParent.offsetTop + cHeight);
   
         // Update positions of connected lines
         for (let line of this.lines) {
@@ -342,7 +347,7 @@ class Line {
       text(
         this.label,
         (this.startX + this.endX) / 2 ,
-        (this.startY + this.endY) / 2       
+        (this.startY + this.endY) / 2 - 50      
       );
     }
   }
@@ -434,8 +439,6 @@ function CreateLineTransition(line) {
   console.log("From ", fromIndex, " to ", destIndex, " on ", char);
   SuperFA.createTransition(fromIndex, destIndex, char);
 }
-
-
 
 function updateFinalStates(box) {
   //Check if checkbox is ticked to make final state
