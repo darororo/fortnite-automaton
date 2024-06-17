@@ -193,16 +193,20 @@ function showFAType() {
     NFAEle.style.backgroundColor = "Green";
 
     convertBtn.disabled = false;
-    minimizeBtn.disabled = true;
     convertBtn.style.backgroundColor = "orange"
+    
+    minimizeBtn.disabled = true;
+    minimizeBtn.style.backgroundColor = "#9faec1";
   } 
   if(SuperFA.type == TypeFA.DFA){
     DFAEle.style.backgroundColor = "Green";
     NFAEle.style.backgroundColor = "#9faec1";
 
     minimizeBtn.disabled = false;
-    convertBtn.disabled = true;
     minimizeBtn.style.background = "orange"; 
+
+    convertBtn.disabled = true;
+    convertBtn.style.backgroundColor = "#9faec1";
   }
   
 }

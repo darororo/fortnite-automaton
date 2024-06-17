@@ -33,7 +33,8 @@ class Draggable {
       boxCounter++; // Increment box counter for the next box
 
       this.checkbox = createCheckbox("f");
-      this.checkbox.position(this.x + canvasParent.offsetLeft, this.y + canvasParent.offsetTop + 10 );
+      let cHeight = this.checkbox.elt.childNodes[0].childNodes[0].clientHeight;
+      this.checkbox.position(this.x + canvasParent.offsetLeft, this.y + canvasParent.offsetTop + cHeight );
       this.checkbox.changed(() => {
         updateFinalStates(this);
       }) 
@@ -81,7 +82,8 @@ class Draggable {
         this.smallBoxY = this.y + (this.h - this.smallBoxSize) / 2;
 
         //Update Checkbox position
-        this.checkbox.position(this.x + canvasParent.offsetLeft, this.y + canvasParent.offsetTop + 10);
+        let cHeight = this.checkbox.elt.childNodes[0].childNodes[0].clientHeight;
+        this.checkbox.position(this.x + canvasParent.offsetLeft, this.y + canvasParent.offsetTop + cHeight);
   
         // Update positions of connected lines
         for (let line of this.lines) {
