@@ -252,11 +252,30 @@ function rejectdata(){
   console.log(rejectValue);
 }
 
+const result = document.querySelector("result");
+
 document.getElementById("bulk").addEventListener("click", function(){
   const getAccept = document.getElementById('acc_input').value;
   const acceptValue = getAccept.split('/n');
   const getReject = document.getElementById('rej_input').value;
   const rejectValue = getReject.split('\n');
+  const resultValue = createElement('div');
 
-  
+
+  if(SuperFA.output == 0 && rejectValue){
+    resultValue.innerText = "Pass";
+    // document.getElementById("result").innerText = "Reject";
+  }else if(SuperFA.output == 1 && rejectValue){
+    // document.getElementById("result").innerText = "Accept";
+    resultValue.innerText = "Fail";
+  }
+  else if(SuperFA.output == 0 && acceptValue){
+    resultValue.innerText = "Pass";
+    // document.getElementById("result").innerText = "Reject";
+  }else if(SuperFA.output == 1 && acceptValue){
+    // document.getElementById("result").innerText = "Accept";
+    resultValue.innerText = "Fail";
+  }
+  console.log(resultValue.innerText)
+  result.appendChild(resultValue.innerText)
 })
