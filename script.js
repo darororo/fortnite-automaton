@@ -67,7 +67,7 @@ function setup() {
   mycanvas.parent("canvasParent");
   windowResized();
   
-  renderFA(f3);
+  // renderFA(f3);
   // renderFA(f12);  //dfa
   // renderFA(f9);   //nfa
 }
@@ -131,16 +131,16 @@ function draw() {
 
 }
 
-
-
 testStringBtn.addEventListener('click', function(){
   console.log(testStringInp.value);
   SuperFA.checkStr(testStringInp.value);
 
   if(SuperFA.output == 0){
     document.getElementById("str-result").innerText = "Reject";
+    document.getElementById("str-result").style.color = "Red"
   }else{
     document.getElementById("str-result").innerText = "Accept";
+    document.getElementById("str-result").style.color = "#32CD32";
   }
   document.getElementById("str-result").style.display = "inline";
 
@@ -193,16 +193,20 @@ function showFAType() {
     NFAEle.style.backgroundColor = "Green";
 
     convertBtn.disabled = false;
-    minimizeBtn.disabled = true;
     convertBtn.style.backgroundColor = "orange"
+    
+    minimizeBtn.disabled = true;
+    minimizeBtn.style.backgroundColor = "#9faec1";
   } 
   if(SuperFA.type == TypeFA.DFA){
     DFAEle.style.backgroundColor = "Green";
     NFAEle.style.backgroundColor = "#9faec1";
 
     minimizeBtn.disabled = false;
-    convertBtn.disabled = true;
     minimizeBtn.style.background = "orange"; 
+
+    convertBtn.disabled = true;
+    convertBtn.style.backgroundColor = "#9faec1";
   }
   
 }

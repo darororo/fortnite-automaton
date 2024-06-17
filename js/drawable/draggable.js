@@ -172,6 +172,11 @@ class Draggable {
       console.log(startLines);
     }
 
+    //Check if transition already exist
+    transitionExists(endBox){
+      return this.lines.find(line => line.endBox === endBox);
+    }
+
   }
   
   
@@ -286,8 +291,15 @@ class Line {
 
     endBox.lines.push(this);
     
-    // Open the new frame for the user to enter the label
-    if(this.label === undefined) openNewFrame(this);
+    // if(this.label === undefined) openNewFrame(this);
+
+    // Check if a transition already exist between startBox and endBox
+    let existingLine = this.startBox.transitionExists(this.endBox);
+    if(existingLine){
+      openNewFrame(existingLine);
+    }else{
+      openNewFrame(this);
+    }
   }
 
   setLabel(label) {
@@ -367,8 +379,14 @@ function completeLine() {
                   mouseY < box.y + box.h; 
 
     if (mouseOverBox) {
-      currentLine.complete(box);
-      lineList.push(currentLine);
+      //Check if transtion line already exist
+      let existingLine = currentLine.startBox.transitionExists(box);
+      if(existingLine){
+        openNewFrame(existingLine);
+      }else{        
+        currentLine.complete(box);
+        lineList.push(currentLine);
+      }
 
       currentLine = null;
       return;
@@ -404,11 +422,13 @@ function openNewFrame(line) {
   saveButton.innerText = "Save";
   saveButton.onclick = () => {
     let inputValue = document.getElementById("transitName").value;
-    if(inputValue == "") {
-      line.setLabel("ε");
+    if(inputValue == "") inputValue = "ε"; 
+    if(line.label){
+      line.setLabel(line.label + '/' + inputValue);
     } else {
       line.setLabel(inputValue);
     }
+    
     document.body.removeChild(frame);
 
     CreateLineTransition(line);  

@@ -3,8 +3,6 @@ let boxCounter = 0;
 let SuperFA = new FA();
 let alphabetResult = null;
 
-
-
 function setup() {
     canvasParent = document.getElementById("canvasParent");
     
