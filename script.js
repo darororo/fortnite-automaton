@@ -193,16 +193,20 @@ function showFAType() {
     NFAEle.style.backgroundColor = "Green";
 
     convertBtn.disabled = false;
-    minimizeBtn.disabled = true;
     convertBtn.style.backgroundColor = "orange"
+    
+    minimizeBtn.disabled = true;
+    minimizeBtn.style.backgroundColor = "#9faec1";
   } 
   if(SuperFA.type == TypeFA.DFA){
     DFAEle.style.backgroundColor = "Green";
     NFAEle.style.backgroundColor = "#9faec1";
 
     minimizeBtn.disabled = false;
-    convertBtn.disabled = true;
     minimizeBtn.style.background = "orange"; 
+
+    convertBtn.disabled = true;
+    convertBtn.style.backgroundColor = "#9faec1";
   }
   
 }
@@ -234,3 +238,63 @@ function popupCanvas(faObject) {
   
 }
 
+function acceptData(){
+  const getAccept = document.getElementById('acc_input').value;
+  const acceptValue = getAccept.split('\n');
+  
+  console.log(acceptValue);
+}
+
+function rejectData(){
+  const getReject = document.getElementById('rej_input').value;
+  const rejectValue = getReject.split('\n');
+  
+  console.log(rejectValue);
+}
+
+
+document.getElementById("bulk").addEventListener("click", function(){
+  const getAccept = document.getElementById('acc_input').value;
+  const acceptValue = getAccept.split('\n');
+  const getReject = document.getElementById('rej_input').value;
+  const rejectValue = getReject.split('\n');
+
+  const resultEle = document.querySelector(".result");
+
+
+  console.log(acceptValue);
+  console.log(rejectValue);
+
+  let testResult = [];
+
+  acceptValue.forEach(str => {
+    SuperFA.checkStr(str)
+    let res;
+    if(SuperFA.output == 0) {
+      res = str + " Failed"
+    } else{
+      res = str + " Passed"
+    }
+    testResult.push(res);
+  })
+
+  rejectValue.forEach(str => {
+    SuperFA.checkStr(str)
+    let res;
+    if(SuperFA.output == 0) {
+      res = str + " Passed"
+    } else{
+      res = str + " Failed"
+    }
+    testResult.push(res);
+  })
+
+
+  testResult.forEach(result => {
+    let spanText = document.createElement("span");
+    spanText.innerText = result;
+
+    resultEle.appendChild(spanText);
+  })
+
+})

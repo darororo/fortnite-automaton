@@ -309,3 +309,11 @@ footer span{
         margin-top: 1rem;
     }
 }
+
+#bulk{
+    position: relative;
+    top: 28%;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    background-color: yellow;
+}
