@@ -72,25 +72,11 @@ document.getElementById("save").addEventListener("click", function () {
   saveFAToJSON(SuperFA);
 });
 
-function saveFAToJSON(fa) {
-  const faData = fa.getFAData();
-  const jsonString = JSON.stringify(faData, null, 2);
-  downloadJSON(jsonString, "fa_data.json");
-}
 
-function downloadJSON(content, filename) {
-  const a = document.createElement("a");
-  const file = new Blob([content], {type: "application/json"});
-  a.href = URL.createObjectURL(file);
-  a.download = filename;
-  a.click();
-}
 
 let boxList = [];
 let lineList = [];
 let currentLine = null;
-
-// renderFA(f1);
 
 function draw() {
   background(255);
@@ -98,9 +84,6 @@ function draw() {
     boxList[i].update();
     boxList[i].over();
     boxList[i].show();
-    // boxList[i].checkbox.changed(() => {
-    //   updateFinalStates(boxList[i]);
-    // })
   }
   for (let line of lineList) {
     line.show();
@@ -110,7 +93,15 @@ function draw() {
     currentLine.show();
   }
 
-  // console.log(boxList[0].checkbox)
+  
+  push();
+  fill(165,247,0)
+  stroke(0);
+  strokeWeight(3);
+  if(boxList.length > 0) {
+    text("start", boxList[0].x, boxList[0].y)
+  }
+  pop();
 
 }
 
@@ -289,6 +280,20 @@ function resetFAcanvas() {
   alphabetResult.style.display = 'none';
 
   document.getElementById("str-result").style.display = "none";
+}
+
+function saveFAToJSON(fa) {
+  const faData = fa.getFAData();
+  const jsonString = JSON.stringify(faData, null, 2);
+  downloadJSON(jsonString, "fa_data.json");
+}
+
+function downloadJSON(content, filename) {
+  const a = document.createElement("a");
+  const file = new Blob([content], {type: "application/json"});
+  a.href = URL.createObjectURL(file);
+  a.download = filename;
+  a.click();
 }
 
 document.getElementById("bulk").addEventListener("click", function(){

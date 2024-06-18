@@ -47,5 +47,14 @@ function draw() {
     currentLine.update(mouseX, mouseY);
     currentLine.show();
   }
+
+  push();
+  fill(165,247,0)
+  stroke(0);
+  strokeWeight(3);
+  if(boxList.length > 0) {
+    text("start", boxList[0].x, boxList[0].y)
+  }
+  pop();
 }
 
