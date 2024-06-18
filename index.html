@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Finite Automaton</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="libs/p5.min.js"></script>
+
+  </head>
+  <body>
+    <main>
+      <!--left content-->
+      <aside>
+        <h1>Automata</h1>
+        <div class="fa_type">
+          <h3>FA Type:</h3>
+          <div class="fa">
+            <span>NFA</span>
+            <span>DFA</span>
+          </div>
+        </div>
+
+        <div class="asideBTN">
+          <button id="testfa">Determine Type</button>
+          <button id="convertNFA" disabled>Convert NFA to DFA</button>
+          <button id="minimize" disabled>Minimize DFA</button>
+          <label id="labelText" for="">Test / Debug:</label>
+          <input id="textInput" type="text" />
+          <button id="teststr" class="stringBTN">Test String</button>
+          <span style="position: relative; top: 80%; display: none;" id="str-result">Reject</span>
+        </div>
+        
+        <div>
+          <span id="alphabet-result" style="color: plum; display: none;">[123]</span>
+        </div>
+        <span id='alphabet-label' style="color: gold; font-weight: 100px;"> Alphabet </span>
+        <input type="text" id="alphabet-input">
+        <button id="bulk">Bulk Test</button>
+      </aside>
+
+      <!--right content-->
+      <div class="Rholder">
+        <!--Top button-->
+        <div class="topBTN">
+          <button id="save" style="background-color: yellowgreen">Save</button>
+          <button id="load-btn" style="background-color: orange">Load</button>
+          <button id="reset" style="background-color: crimson">Reset</button>
+        </div>
+
+        <!--Canvas to draw our elements-->
+        <div id="canvasParent"></div>
+
+        <div id="labelModal" style="display: none">
+          <input type="text" id="lineLabel" placeholder="Enter label" />
+          <button id="confirmLabel">OK</button>
+        </div>
+        
+        <!--Bottom Section-->
+        <div class="bottom">
+          <div class="accept">
+            <span class="acc">Accept</span>
+            <textarea name="acc_input" id="acc_input" placeholder=""></textarea>
+          </div>
+          <div class="reject">
+            <span class="rej">Reject</span>
+            <textarea name="rej_input" id="rej_input"></textarea>
+          </div>
+          <div class="result">
+            <span class="res">Result</span>
+          </div>
+        </div>
+      </div>
+    </main>
+    
+    <script src="js/drawable/draggable.js"></script>
+    <script src="js/drawable/event_handlers.js"></script>
+    <script src="js/FA.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
