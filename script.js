@@ -11,31 +11,14 @@ const testStringInp = document.getElementById("textInput");
 const testStringBtn = document.getElementById("teststr");
 const alphabetInp = document.getElementById('alphabet-input');
 const alphabetResult = document.getElementById("alphabet-result");
+const loadBtn = document.getElementById("load-btn");
+
 
 // Empty boxlist array if user clicks reset
-resetbutton.addEventListener("click", function () {
-  console.log("clicked");
+resetbutton.addEventListener("click", () => {resetFAcanvas()});
 
-  boxList.forEach(box => {
-    box.removeCheckbox();
-  });
-
-  boxList = [];
-  boxCounter = 0;
-  lineList = [];
-  showFAType(); // reset color of type labels
-  SuperFA = new FA();
-
-  minimizeBtn.disabled = true;
-  minimizeBtn.style.backgroundColor = "grey";
-  
-  convertBtn.disabled = true;
-  convertBtn.style.backgroundColor = "grey";
-
-  alphabetResult.style.display = 'none';
-
-  document.getElementById("str-result").style.display = "none";
-});
+// load FA JSON
+loadBtn.addEventListener('click', () => {loadFAfromJson();})
 
 // Handle Alphabet Setup
 alphabetInp.addEventListener("change", setAlphabetFA);
@@ -238,20 +221,75 @@ function popupCanvas(faObject) {
   
 }
 
-function acceptData(){
-  const getAccept = document.getElementById('acc_input').value;
-  const acceptValue = getAccept.split('\n');
-  
-  console.log(acceptValue);
+function loadFAfromJson(){
+  const input = document.createElement("input");
+  input.type = "file";
+  input.accept = "application/json";
+  input.onchange = e =>{
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.onload = function(event){
+      resetFAcanvas();
+      const faData = JSON.parse(event.target.result);
+      let FAobject = setFAdata(faData);
+      renderFA(FAobject);
+    };
+    reader.readAsText(file);
+  };
+  input.click();
 }
 
-function rejectData(){
-  const getReject = document.getElementById('rej_input').value;
-  const rejectValue = getReject.split('\n');
-  
-  console.log(rejectValue);
+function setFAdata(FAjson) {
+  let FAobject = new FA();
+  FAobject.alphabet = FAjson.alphabet;
+
+  let states = FAjson.states;
+  let finalStateIndex = FAjson.finalStateIndex;
+
+  states.forEach(state => {
+    FAobject.createState();
+  })
+
+  for(let i = 0; i < states.length; i++) {
+    console.log("state: ", i)
+    let transitions = states[i].allTransitionsIndex;
+    for(let [char, destIndexes] of Object.entries(transitions)) {
+      destIndexes.forEach(index => {
+        FAobject.createTransition(i, index, char);
+      })
+    }
+  }
+
+  finalStateIndex.forEach(index => {
+    FAobject.makeFinalState(FAobject.states[index]);
+  })
+
+  return FAobject;
 }
 
+function resetFAcanvas() {
+  console.log("clicked");
+
+  boxList.forEach(box => {
+    box.removeCheckbox();
+  });
+
+  boxList = [];
+  boxCounter = 0;
+  lineList = [];
+  showFAType(); // reset color of type labels
+  SuperFA = new FA();
+
+  minimizeBtn.disabled = true;
+  minimizeBtn.style.backgroundColor = "grey";
+  
+  convertBtn.disabled = true;
+  convertBtn.style.backgroundColor = "grey";
+
+  alphabetResult.style.display = 'none';
+
+  document.getElementById("str-result").style.display = "none";
+}
 
 document.getElementById("bulk").addEventListener("click", function(){
   const getAccept = document.getElementById('acc_input').value;

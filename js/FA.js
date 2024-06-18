@@ -536,15 +536,23 @@ class FA {
     getFAData(){
         let States = [];
 
+        let finalStateIndex = [];
+
         for(let i = 0; i < this.states.length; i++) {
             let data = {...this.states[i]};
             delete(data.allTransitions);
             States.push(data);
         }
 
+        this.finalStates.forEach(state => {
+            let index = this.states.indexOf(state);
+            finalStateIndex.push(index);
+        })
+
         return {
             states: States,
-
+            finalStateIndex : finalStateIndex,
+            alphabet: this.alphabet
         };
     }
  
