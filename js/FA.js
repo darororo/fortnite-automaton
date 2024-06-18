@@ -190,11 +190,9 @@ class FA {
         }
 
         if(this.finalStates.includes(currentState)) {
-            console.log("FUCK YEAH");
             this.output = 1;
 
         } else {
-            console.log("FUCK NO");
             this.output = 0;
         }
 
@@ -243,11 +241,9 @@ class FA {
         })
 
         if(finalStateCounts > 0) {
-            console.log("FUCK YEAH");
             this.output = 1;
 
         } else {
-            console.log("FUCK NO");
             this.output = 0;
         }
 
@@ -635,445 +631,53 @@ class State {
 }
 
 // test
-let f1 = new FA();
-console.log(TypeFA.DFA);
+// let f1 = new FA();
+// console.log(TypeFA.DFA);
 
-f1.alphabet = ["a", "b", "c"];
-f1.createState();
-f1.createState();
+// f1.alphabet = ["a", "b", "c"];
+// f1.createState();
+// f1.createState();
 
-f1.makeFinalState(f1.states[1]);
+// f1.makeFinalState(f1.states[1]);
 
-f1.createTransition(0, 1, "a");
-f1.createTransition(0, 1, "b");
+// f1.createTransition(0, 1, "a");
+// f1.createTransition(0, 1, "b");
 
-f1.createTransition(1, 1, "a");
-f1.createTransition(1, 1, "b");
-
+// f1.createTransition(1, 1, "a");
+// f1.createTransition(1, 1, "b");
 
 // console.log("f1 type: " );
 // f1.getType();
 
-// let f2 = new FA();
-// f2.alphabet = ["a", "b", "c"];
-// f2.createState();
-// f2.createState();
-// f2.createState();
-// f2.createState();
+// f1.checkStr("ab"); // accept
+// f1.output -> 1 = accepted; 0 = rejected
 
-// f2.makeFinalState(f2.states[2])
-// f2.makeFinalState(f2.states[3])
 
-
-// console.log(f2.finalStates.length)
-
-// f2.states[0].createTransition("", f2.states[2]);
-
-// f2.states[1].createTransition("a", f2.states[1]);
-// f2.states[1].createTransition("b", f2.states[1]);
-// f2.states[1].createTransition("", f2.states[2]);
-// f2.states[2].createTransition("", f2.states[3]);
-
-
-// console.log("f2 type: " );
-// f2.getType();
-
-// f2.checkStr("")
-
-
-
-//NFA
-// console.log("F3")
-let f3 = new FA();
-
-f3.alphabet = ["0", "1", "2"];
-f3.createState();
-f3.createState();
-f3.createState();
-f3.createState();
-
-f3.makeFinalState(f3.states[1]);
-f3.makeFinalState(f3.states[3]);
-
-f3.createTransition(0, 1, "0");
-f3.createTransition(0, 2 ,"1");
-f3.createTransition(0, 3, "");
-
-
-f3.createTransition(1,1,"0");
-f3.createTransition(1,3,"");
-
-f3.createTransition(2,2,"0");
-f3.createTransition(1,2,"1");
-
-f3.createTransition(3,2,"");
-
-// console.log("f3 type: " );
-// f3.getType();
-
-// f3.NFAtoDFA();
-
-
-
-// console.log(f3.states[0].epsilonClosure())
-
-// f3.checkStr("0")           // FUCK YES
-// f3.checkStr("")            // FUCK YES
-
-// f3.checkStr("1")           // FUCK NO
-// f3.checkStr("11")           // FUCK NO
-
-// console.log(f3.NFAtoDFA());
-
-
-// DFA
-// let f4 = new FA();
-// f4.alphabet = ["a", "b"];
-// f4.createState();
-// f4.createState();
-// f4.createState();
-
-// f4.states[0].createTransition("a", f4.states[1]);
-// f4.states[0].createTransition("b", f4.states[2]);
-
-// f4.states[1].createTransition("a", f4.states[2]);
-// f4.states[1].createTransition("b", f4.states[1]);
-
-// f4.states[2].createTransition("a", f4.states[0]);
-// f4.states[2].createTransition("b", f4.states[1]);
-
-// f4.makeFinalState(f4.states[2]);
-
-// console.log("f4 type: ");
-// f4.getType();
-
-
-// f4.checkStr("aa");  // FUCK YEAH
-// f4.checkStr("aaa"); // FUCK NO
-// f4.checkStr("aaaaa"); // FUCK YEAH
-
-
-// let f5 = new FA();
-// f5.createState();
-// f5.createState();
-// f5.createState();
-// f5.alphabet = ["a"]
-
-// f5.states[0].createTransition("", f5.states[0])
-// f5.states[0].createTransition("", f5.states[1])
-// f5.states[1].createTransition("", f5.states[0])
-// f5.createTransition(0, 0, "");
-// f5.createTransition(0, 1, "");
-
-// f5.createTransition(1, 0, "");
-
-// f5.states[0].epsilonClosure();
-
-// console.log(f5.states[0].epsilonClosure())
-
-// f5.checkStr("b")
-// console.log(f5.states[0]);
-// f5.states[0].deleteAllTransition();
-// console.log(f5.states[0]);
-
-
-// Chapter 5 homework NFA To DFA 1
-// Accept strings containing abb
-// let f6 = new FA();
-// f6.alphabet = ["a", "b"];
-// f6.createState();
-// f6.createState();
-// f6.createState();
-// f6.createState();
-
-// f6.states[0].createTransition("a", f6.states[0]);
-// f6.states[0].createTransition("b", f6.states[0]);
-// f6.states[0].createTransition("a", f6.states[1]);
-
-// f6.states[1].createTransition("b", f6.states[2]);
-
-// f6.states[2].createTransition("b", f6.states[3]);
-
-// f6.states[3].createTransition("a", f6.states[3]);
-// f6.states[3].createTransition("b", f6.states[3]);
-
-// f6.makeFinalState(f6.states[3]);
-// f6.getType()
-// f6.checkStr("abab") //FUCK NO
-// f6.checkStr("ababb") //FUCK YEAH
-// f6.checkStr("ababba") //FUCK YEAH
-
-
-
-// let f6DFA = f6.getNFAtoDFA();   // 4 states when turned into DFA
-// f6DFA.getType()
-
-// f6DFA.checkStr("abab") //FUCK NO
-// f6DFA.checkStr("ababb") //FUCK YEAH
-// f6DFA.checkStr("ababba") //FUCK YEAH
-
-
-
-// Chapter 5 homework NFA To DFA 2
-// Starts with ab; end with ba
-// let f7 = new FA();
-// f7.alphabet = ["a", "b"];
-
-// f7.createState();
-// f7.createState();
-// f7.createState();
-// f7.createState();
-// f7.createState();
-
-// f7.makeFinalState(f7.states[4]);
-
-
-// f7.states[0].createTransition("a", f7.states[1]);
-
-// f7.states[1].createTransition("b", f7.states[2]);
-
-// f7.states[2].createTransition("a", f7.states[2]);
-// f7.states[2].createTransition("b", f7.states[2]);
-// f7.states[2].createTransition("b", f7.states[3]);
-
-// f7.states[3].createTransition("a", f7.states[4]);
-
-
-// f7.makeFinalState(f7.states[4]);
-
-// f7.getType()
-
-// f7.checkStr("baaba");   // FUCK NO
-// f7.checkStr("aba");   // FUCK NO
-
-// f7.checkStr("ababaaba"); // FUCK YEAH
-// f7.checkStr("abba"); // FUCK YEAH
-
-
-
-// let f7DFA = f7.getNFAtoDFA(); // 6 states when turned into DFA
-
-// console.log("DFA STATES: " + f7DFA.states.length)
-// f7DFA.getType();
-
-// f7DFA.checkStr("baaba");   // FUCK NO
-// f7DFA.checkStr("aba");   // FUCK NO
-
-
-// f7DFA.checkStr("ababaaba"); // FUCK YEAH
-// f7DFA.checkStr("abba"); // FUCK YEAH
-
-
-// let f8 = new FA();
-
-// f8.alphabet = ["a", "b"];
-
-// f8.createState();
-// f8.createState();
-
-// f8.states[0].createTransition("a", f8.states[1]);
-
-// f8.getType()
-
-// f8.makeFinalState(f8.states[1])
-
-// f8.checkStr("a")
-// f8.checkStr("b")
-
-
-// let f8DFA = f8.getNFAtoDFA();
-
-// // console.log(f8DFA);
-// f8DFA.checkStr("a")
-// f8DFA.checkStr("b")
 
 // Chapter 5 homework NFA To DFA 3
+// let f9 = new FA();
+// f9.alphabet = ["a", "b"];
 
-let f9 = new FA();
-f9.alphabet = ["a", "b"];
+// for(let i = 0; i < 6; i++) f9.createState();
 
-for(let i = 0; i < 6; i++) f9.createState();
+// f9.makeFinalState(f9.states[3]);
 
-f9.makeFinalState(f9.states[3]);
+// f9.createTransition(0, 1, "b"); // new wrapper function
 
-// f9.states[0].createTransition("b", f9.states[1]);
+// f9.createTransition(1, 2, "a"); 
+// f9.createTransition(1, 5, "b"); 
+// f9.createTransition(1, 2, ""); 
 
-f9.createTransition(0, 1, "b"); // new wrapper function
+// f9.createTransition(2, 1, "b"); 
+// f9.createTransition(2, 3, "b"); 
 
-f9.createTransition(1, 2, "a"); 
-f9.createTransition(1, 5, "b"); 
-f9.createTransition(1, 2, ""); 
+// f9.createTransition(3, 4, "a"); 
 
-f9.createTransition(2, 1, "b"); 
-f9.createTransition(2, 3, "b"); 
+// f9.createTransition(4, 3, ""); 
+// f9.createTransition(4, 2, "b"); 
+// f9.createTransition(4, 5, "a"); 
 
-f9.createTransition(3, 4, "a"); 
+// f9.createTransition(5, 2, ""); 
+// f9.createTransition(5, 3, "a"); 
 
-f9.createTransition(4, 3, ""); 
-f9.createTransition(4, 2, "b"); 
-f9.createTransition(4, 5, "a"); 
-
-f9.createTransition(5, 2, ""); 
-f9.createTransition(5, 3, "a"); 
-
-
-// console.log(f9);
-
-// let f9DFA = f9.getNFAtoDFA();   // 8 states, 4 final states; like in the homework
-
-// console.log(f9DFA)
-
-// console.log(f9.type);
-
-// DFA minimization TEST
-
-
-// Chapter 5 Homework Minimize DFA 1
-// let f10 = new FA();
-// f10.alphabet = ["a", "b"];
-
-// for(let i = 0; i < 5; i++) f10.createState();
-// f10.makeFinalState(f10.states[1]);
-// f10.makeFinalState(f10.states[3]);
-
-// f10.createTransition(0, 1, "a");
-// f10.createTransition(0, 1, "b");
-
-// f10.createTransition(1, 2, "a");
-// f10.createTransition(1, 2, "b");
-
-// f10.createTransition(2, 3, "a");
-// f10.createTransition(2, 3, "b");
-
-// f10.createTransition(3, 2, "a");
-// f10.createTransition(3, 2, "b");
-
-// f10.createTransition(4, 3, "a");
-// f10.createTransition(4, 2, "b");
-
-// f10.getType();
-
-// f10.checkStr("a");
-// f10.checkStr("ab");
-// f10.checkStr("aba");
-// f10.checkStr("aaa")
-
-// let f10Min = f10.getMinimizedDFA();
-// f10Min.getType();
-
-// f10Min.checkStr("a");
-// f10Min.checkStr("ab");
-// f10Min.checkStr("aba");
-// f10Min.checkStr("aaa")
-
-
-// // Chapter 5 Homework Minimize DFA 2
-// let f11 = new FA();
-// f11.alphabet = ["0", "1"]
-
-// for(let i = 0; i < 6; i++) f11.createState();
-// f11.makeFinalState(f11.states[2]);
-// f11.makeFinalState(f11.states[3]);
-
-// f11.createTransition(0, 1, "0");
-// f11.createTransition(0, 2, "1");
-
-// f11.createTransition(1, 0, "0");
-// f11.createTransition(1, 3, "1");
-
-// f11.createTransition(2, 4, "0");
-// f11.createTransition(2, 5, "1");
-
-// f11.createTransition(3, 4, "0");
-// f11.createTransition(3, 5, "1");
-
-// f11.createTransition(4, 4, "0");
-// f11.createTransition(4, 5, "1");
-
-// f11.createTransition(5, 5, "0");
-// f11.createTransition(5, 5, "1");
-
-// f11.getType();
-
-// f11.checkStr("1");      // FUCK YEAH
-// f11.checkStr("01");     // FUCK YEAH
-// f11.checkStr("0001");   // FUCK YEAH
-// f11.checkStr("011");    // FUCK NO
-// f11.checkStr("010");    // FUCK NO
-
-
-// let f11Min = f11.getMinimizedDFA();
-// f11.getType()
-
-// f11Min.checkStr("1");      // FUCK YEAH
-// f11Min.checkStr("01");     // FUCK YEAH
-// f11Min.checkStr("0001");   // FUCK YEAH
-// f11Min.checkStr("011");    // FUCK NO
-// f11Min.checkStr("010");    // FUCK NO
-
-let f12 = new FA();
-f12.alphabet = ['0', '1'];
-
-for(let i = 0; i < 6; i++) f12.createState();
-
-f12.makeFinalState(f12.states[3]);
-f12.makeFinalState(f12.states[4]);
-
-
-f12.createTransition(0, 1, '0');
-f12.createTransition(0, 2, '1');
-
-f12.createTransition(1, 0, '0');
-f12.createTransition(1, 3, '1');
-
-f12.createTransition(2, 4, '0');
-f12.createTransition(2, 5, '1');
-
-f12.createTransition(3, 4, '0');
-f12.createTransition(3, 5, '1');
-// f12.createTransition(3, 3, '1');
-
-
-f12.createTransition(4, 4, '0');
-f12.createTransition(4, 5, '1');
-
-f12.createTransition(5, 5, '0');
-f12.createTransition(5, 5, '1');
-
-// f12.getType();
-
-
-// console.log(f12.states[2]);
-// console.log(f12.states[3]);
-// console.log(f12.states[5]);
-// console.log(f12.states[2]);
-// console.log(f12.states[3]);
-// console.log(f12.states[5]);
-
-// console.log(f12.states[5]);
-// console.log(f12.states[4]);
-// f12.deleteAllTransitionFrom(5);
-// console.log(f12.states[5]);
-// console.log(f12.states[4]);
-
-
-f12.checkStr("01") // accept
-f12.checkStr("0100") // accept
-
-
-f12.checkStr("01101") // reject
-f12.checkStr("01001") // reject
-
-
-
-let f12Min = f12.getMinimizedDFA();
-console.log(f12Min.states.length);
-
-f12Min.checkStr("01") // accept
-f12Min.checkStr("0100") // accept
-
-f12Min.checkStr("01101") // reject
-f12Min.checkStr("01001") // reject
-
-f12Min.states.forEach(state => console.log(state))
 
