@@ -490,8 +490,8 @@ function CreateLineTransition(line) {
   let char = line.label;
   let fromIndex = boxList.indexOf(line.startBox);
   let destIndex = boxList.indexOf(line.endBox);
-  SuperFA.createTransition(fromIndex, destIndex, char);
   if(char == 'ε') char = '';
+  SuperFA.createTransition(fromIndex, destIndex, char);
   console.log("From ", fromIndex, " to ", destIndex, " on ", char);
   
 }

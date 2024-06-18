@@ -50,9 +50,8 @@ function setup() {
   mycanvas.parent("canvasParent");
   windowResized();
   
-  renderFA(f3);
-  // renderFA(f12);  //dfa
-  // renderFA(f9);   //nfa
+  // renderFA(f1)
+  renderFA(f3);   //nfa
 }
 
 // Adding resize function for responsiveness
