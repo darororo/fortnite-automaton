@@ -12,6 +12,8 @@ const testStringBtn = document.getElementById("teststr");
 const alphabetInp = document.getElementById('alphabet-input');
 const alphabetResult = document.getElementById("alphabet-result");
 const loadBtn = document.getElementById("load-btn");
+const bulkTestBtn = document.getElementById("bulk");
+
 
 
 // Empty boxlist array if user clicks reset
@@ -32,6 +34,9 @@ convertBtn.onclick = () => {
   let DFA = SuperFA.getNFAtoDFA();
   popupCanvas(DFA)
 }
+
+bulkTestBtn.addEventListener("click", bulkTestStr)
+
 
 minimizeBtn.disabled = true;
 convertBtn.disabled = true;
@@ -295,7 +300,7 @@ function downloadJSON(content, filename) {
   a.click();
 }
 
-document.getElementById("bulk").addEventListener("click", function(){
+function bulkTestStr() {
   const getAccept = document.getElementById('acc_input').value;
   const acceptValue = getAccept.split('\n');
   const getReject = document.getElementById('rej_input').value;
@@ -303,6 +308,10 @@ document.getElementById("bulk").addEventListener("click", function(){
 
   const resultEle = document.querySelector(".result");
 
+  for(let i = resultEle.childNodes.length - 1; i > 2 ; i--) {
+    let child = resultEle.childNodes[i]
+    resultEle.removeChild(child);
+  }
 
   console.log(acceptValue);
   console.log(rejectValue);
@@ -337,6 +346,8 @@ document.getElementById("bulk").addEventListener("click", function(){
     spanText.innerText = result;
 
     resultEle.appendChild(spanText);
-  })
 
-})
+    console.log("appending: ", result)
+  })
+}
+
