@@ -44,7 +44,8 @@ Only a string of length 1 will be loaded.
 
 You can test one string at a time or use the bulk-test feature.
 
-For bulk testing, the result will pass or fail depending on if the strings are accepted or rejected as expected.
+For bulk testing, seperate each string by a new line.
+The result will pass or fail depending on if the strings are accepted or rejected as expected.
 
 ![alt text](assets/how-tos/test-str.png)
 
